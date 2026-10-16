@@ -29,6 +29,8 @@ spec:
               cpu: 100m
               memory: 128Mi
             limits:
+              # Exigé par le quota onyxia-quota du namespace
+              cpu: 500m
               memory: 256Mi
           volumeMounts:
             - name: datasets

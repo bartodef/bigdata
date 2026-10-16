@@ -27,3 +27,6 @@ appliquée, même pour l'utilisateur authentifié propriétaire du bucket. L'ACL
 - ETag d'un upload simple = md5 du fichier ; upload multipart de 200 Mo = ETag suffixé `-25` (25 parts de 8 Mo).
 - Versioning supporté : l'objet uploadé avant l'activation a la version `null` ; un `rm` pose un delete marker et
   toutes les versions restent récupérables.
+- Le Job de l'énoncé est refusé par le quota du namespace Onyxia (`failed quota: onyxia-quota: must specify
+  limits.cpu`) : un `ResourceQuota` qui limite le CPU impose que chaque conteneur déclare `limits.cpu`. Ajout de
+  `cpu: 500m` dans les limits du Job.

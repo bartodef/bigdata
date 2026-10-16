@@ -7,10 +7,13 @@ authors = [
     { name = "b-defelice-ece", email = "bartolomeo.defelice@edu.ece.fr" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "faker>=40.37.0",
+]
 
 [project.scripts]
-bigdata = "bigdata:main"
+dataset-users = "bigdata.dataset_users:main"
+dataset-orders = "bigdata.dataset_orders:main"
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]

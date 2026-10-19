@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-export-job
+  namespace: lab-job-cronjob
+spec:
+  parallelism: 4      # Run 4 Pods in parallel
+  completions: 4      # Need 4 successful completions
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+      - name: export
+        image: python:3.9
+        command: ["python", "-c"]
+        args:
+          - |
+            import os, time
+            pod = os.getenv('HOSTNAME', 'unknown')
+            print(f"Pod {pod}: Exporting shard...")
+            time.sleep(5)
+            print(f"Pod {pod}: Export completed!")
+      restartPolicy: Never

@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etl-bronze-to-silver
+  namespace: lab-job-cronjob
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          containers:
+          - name: etl
+            image: python:3.9
+            env:
+            - name: BATCH_SIZE
+              value: "1000"
+            command: ["python", "-c"]
+            args:
+              - |
+                from datetime import datetime
+                import os
+                timestamp = datetime.now().isoformat()
+                batch_size = os.getenv('BATCH_SIZE')
+                print(f"[{timestamp}] ETL: Bronze→Silver")
+                print(f"[{timestamp}] Batch size: {batch_size}")
+                print(f"[{timestamp}] Reading, validating, deduplicating...")
+                print(f"[{timestamp}] Writing to Silver layer...")
+                print(f"[{timestamp}] Completed!")
+          restartPolicy: Never

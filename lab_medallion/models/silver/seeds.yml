@@ -1,0 +1,20 @@
+seeds:
+  - name: states
+    description: Codes of the US states, DC, territories and military regions (AA, AE, AP) produced by Faker.
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+  - name: zip_ranges
+    description: >
+      First 3 digits of the ZIP codes allowed for each state (USPS prefixes, simplified to one or a few ranges per
+      state). Reference data to keep in sync with the USPS publication.
+    columns:
+      - name: code
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('states')
+                field: code

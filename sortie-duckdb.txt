@@ -1,0 +1,631 @@
+https://s3.seaweedfs.adm.adaltas.cloud user-b-defelice-ece
+/usr/local/bin/duckdb
+[90m-- Loading resources from /home/onyxia/.duckdbrc
+[00mv1.5.5 (Variegata) d8cdaa33fd
+2026-10-16 09:21:04     331568 orders.csv
+2026-10-16 09:20:59       7351 users.csv
+SET VARIABLE bucket = 's3://user-b-defelice-ece';
+SET TimeZone = 'UTC';
+=== Secret S3
+[90m-- Loading resources from /home/onyxia/.duckdbrc
+[00m┌──────────────────────┬─────────┬──────────┬────────────┬────────────┐
+│         name         │  type   │ provider │ persistent │  storage   │
+│       varchar        │ varchar │ varchar  │  boolean   │  varchar   │
+├──────────────────────┼─────────┼──────────┼────────────┼────────────┤
+│ s3_onyxia_connection │ s3      │ config   │ true       │ local_file │
+└──────────────────────┴─────────┴──────────┴────────────┴────────────┘
+[90m-- Loading resources from /home/onyxia/.duckdbrc
+[00mendpoint=s3.seaweedfs.adm.adaltas.cloud
+url_style=path │
+[90m-- Loading resources from init.sql
+[00mHTTP Error: HTTP GET error reading 'https://s3.seaweedfs.adm.adaltas.cloud/user-b-defelice-ece/bronze/users.csv' in region 'us-east-1' (HTTP 403 Forbidden)
+
+InvalidAccessKeyId: The access key ID you provided does not exist in our records.
+
+Authentication Failure - this is usually caused by invalid or missing credentials.
+* Credentials are provided, but they did not work.
+* See https://duckdb.org/docs/stable/extensions/httpfs/s3api.html
+
+Authentication Failure - this is usually caused by invalid or missing credentials.
+* Credentials are provided, but they did not work.
+* See https://duckdb.org/docs/stable/extensions/httpfs/s3api.html
+
+LINE 1: SELECT count(*) AS users FROM read_csv(getvariable('bucket') || '/bronze/users.csv')
+                                      ^
+Secret S3 expiré, recréation depuis le profil default
+[90m-- Loading resources from /home/onyxia/.duckdbrc
+[00m┌─────────┐
+│ Success │
+│ boolean │
+├─────────┤
+│ true    │
+└─────────┘
+[90m-- Loading resources from init.sql
+[00m┌───────┐
+│ users │
+│ int64 │
+├───────┤
+│    50 │
+└───────┘
+=== Requêtes du lab
+[90m-- Loading resources from init.sql
+[00m
+SELECT getvariable('bucket') AS bucket;
+┌──────────────────────────┐
+│          bucket          │
+│         varchar          │
+├──────────────────────────┤
+│ s3://user-b-defelice-ece │
+└──────────────────────────┘
+
+-- Couche bronze
+SELECT uuid, username, name, birthdate
+FROM read_csv(getvariable('bucket') || '/bronze/users.csv', header = true, strict_mode = false)
+LIMIT 3;
+┌──────────────────────────────────────┬────────────────┬────────────────┬────────────┐
+│                 uuid                 │    username    │      name      │ birthdate  │
+│               varchar                │    varchar     │    varchar     │    date    │
+├──────────────────────────────────────┼────────────────┼────────────────┼────────────┤
+│ bdd640fb-0667-4ad1-9c80-317fa3b1799d │ garzaanthony   │ Charles Garcia │ 1935-10-07 │
+│ 17be3111-1a2a-43ed-962b-0f79c37459ee │ blairamanda    │ Ryan Munoz     │ 2010-01-02 │
+│ 47294739-614f-43d7-99db-3ad0ddd1dfb2 │ elizabethmiles │ Jacob Wood     │ 1941-11-05 │
+└──────────────────────────────────────┴────────────────┴────────────────┴────────────┘
+SELECT Delimiter, Quote, HasHeader
+FROM sniff_csv(getvariable('bucket') || '/bronze/users.csv');
+┌───────────┬─────────┬───────────┐
+│ Delimiter │  Quote  │ HasHeader │
+│  varchar  │ varchar │  boolean  │
+├───────────┼─────────┼───────────┤
+│ ,         │ "       │ true      │
+└───────────┴─────────┴───────────┘
+DESCRIBE FROM read_csv(getvariable('bucket') || '/bronze/orders.csv');
+[90m┌────────────────────────────────────┐[00m[90m
+[00m[90m│              [00m[1mDescribe[00m[90m              │[00m[90m
+[00m[90m│                                    │[00m[90m
+[00m[90m│ [00muuid[90m      [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m│ [00muser_uuid[90m [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m│ [00mdate[90m      [00m[90mtimestamp with time zone[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mquantity[90m  [00m[90mbigint[00m[90m                   [00m[90m│[00m[90m
+[00m[90m│ [00mproduct[90m   [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m└────────────────────────────────────┘[00m[90m
+[00mSELECT column_name, column_type, approx_unique, null_percentage
+FROM (SUMMARIZE FROM read_csv(getvariable('bucket') || '/bronze/orders.csv'));
+┌─────────────┬──────────────────────────┬───────────────┬─────────────────┐
+│ column_name │       column_type        │ approx_unique │ null_percentage │
+│   varchar   │         varchar          │     int64     │  decimal(9,2)   │
+├─────────────┼──────────────────────────┼───────────────┼─────────────────┤
+│ uuid        │ VARCHAR                  │          3167 │            0.00 │
+│ user_uuid   │ VARCHAR                  │            40 │            0.00 │
+│ date        │ TIMESTAMP WITH TIME ZONE │          3566 │            0.00 │
+│ quantity    │ BIGINT                   │             5 │            0.00 │
+│ product     │ VARCHAR                  │             6 │            0.00 │
+└─────────────┴──────────────────────────┴───────────────┴─────────────────┘
+
+-- Chargement des tables
+CREATE OR REPLACE TABLE users AS
+FROM read_csv(getvariable('bucket') || '/bronze/users.csv');
+CREATE OR REPLACE TABLE orders AS
+FROM read_csv(getvariable('bucket') || '/bronze/orders.csv');
+.tables
+[38;5;172m ─────────────────────── analytics ─────────────────────── 
+[00m[38;5;39m ───────────────────────── main ────────────────────────── 
+[00m[90m┌───────────────────┐[00m[90m┌────────────────────────────────────┐[00m[90m
+[00m[90m│       [00m[1musers[00m[90m       │[00m[90m│               [00m[1morders[00m[90m               │[00m[90m
+[00m[90m│                   │[00m[90m│                                    │[00m[90m
+[00m[90m│ [00muuid[90m      [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│ [00muuid[90m      [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m│ [00musername[90m  [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│ [00muser_uuid[90m [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m│ [00mname[90m      [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│ [00mdate[90m      [00m[90mtimestamp with time zone[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00msex[90m       [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│ [00mquantity[90m  [00m[90mbigint[00m[90m                   [00m[90m│[00m[90m
+[00m[90m│ [00maddress[90m   [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│ [00mproduct[90m   [00m[90mvarchar[00m[90m                  [00m[90m│[00m[90m
+[00m[90m│ [00mmail[90m      [00m[90mvarchar[00m[90m [00m[90m│[00m[90m│                                    │[00m[90m
+[00m[90m│ [00mbirthdate[90m [00m[90mdate[00m[90m    [00m[90m│[00m[90m│             [00m[90m2829 rows[00m[90m              │[00m[90m
+[00m[90m│                   │[00m[90m└────────────────────────────────────┘[00m[90m
+[00m[90m│      [00m[90m50 rows[00m[90m      │[00m[90m
+[00m[90m└───────────────────┘[00m[90m
+[00mSELECT
+  (SELECT count(*) FROM users) AS users,
+  (SELECT count(*) FROM orders) AS orders;
+┌───────┬────────┐
+│ users │ orders │
+│ int64 │ int64  │
+├───────┼────────┤
+│    50 │   2829 │
+└───────┴────────┘
+SELECT min(date) AS first_order, max(date) AS last_order FROM orders;
+┌───────────────────────────────┬───────────────────────────────┐
+│          first_order          │          last_order           │
+│   timestamp with time zone    │   timestamp with time zone    │
+├───────────────────────────────┼───────────────────────────────┤
+│ 2020-01-01 00:02:17.891488+00 │ 2020-04-27 20:12:06.167622+00 │
+└───────────────────────────────┴───────────────────────────────┘
+
+-- Qualité
+SELECT count(*) AS orphan_orders FROM orders o ANTI JOIN users u ON o.user_uuid = u.uuid;
+┌───────────────┐
+│ orphan_orders │
+│     int64     │
+├───────────────┤
+│             0 │
+└───────────────┘
+SELECT count(*) AS inactive_users FROM users u ANTI JOIN orders o ON o.user_uuid = u.uuid;
+┌────────────────┐
+│ inactive_users │
+│     int64      │
+├────────────────┤
+│              0 │
+└────────────────┘
+SELECT uuid, count(*) AS occurrences FROM orders GROUP BY uuid HAVING count(*) > 1;
+┌─────────┬─────────────┐
+│  uuid   │ occurrences │
+│ varchar │    int64    │
+└─────────┴─────────────┘
+         0 rows        
+
+-- Agrégations
+SELECT
+  product,
+  count(*) AS orders,
+  sum(quantity) AS quantity,
+  round(100 * sum(quantity) / sum(sum(quantity)) OVER (), 1) AS share_pct
+FROM orders
+GROUP BY product
+ORDER BY quantity DESC;
+┌───────────┬────────┬──────────┬───────────┐
+│  product  │ orders │ quantity │ share_pct │
+│  varchar  │ int64  │  int128  │  double   │
+├───────────┼────────┼──────────┼───────────┤
+│ croissant │    491 │     1523 │      17.7 │
+│ drink     │    484 │     1493 │      17.3 │
+│ brioche   │    468 │     1424 │      16.5 │
+│ bread     │    458 │     1420 │      16.5 │
+│ donut     │    462 │     1390 │      16.1 │
+│ cookie    │    466 │     1365 │      15.8 │
+└───────────┴────────┴──────────┴───────────┘
+SELECT date_trunc('month', date) AS month, count(*) AS orders, sum(quantity) AS quantity
+FROM orders
+GROUP BY month
+ORDER BY month;
+┌──────────────────────────┬────────┬──────────┐
+│          month           │ orders │ quantity │
+│ timestamp with time zone │ int64  │  int128  │
+├──────────────────────────┼────────┼──────────┤
+│ 2020-01-01 00:00:00+00   │    744 │     2297 │
+│ 2020-02-01 00:00:00+00   │    696 │     2154 │
+│ 2020-03-01 00:00:00+00   │    744 │     2192 │
+│ 2020-04-01 00:00:00+00   │    645 │     1972 │
+└──────────────────────────┴────────┴──────────┘
+
+-- Jointures
+SELECT u.username, u.name, count(*) AS orders, sum(o.quantity) AS quantity
+FROM orders o
+JOIN users u ON o.user_uuid = u.uuid
+GROUP BY ALL
+ORDER BY quantity DESC
+LIMIT 5;
+┌─────────────┬────────────────────┬────────┬──────────┐
+│  username   │        name        │ orders │ quantity │
+│   varchar   │      varchar       │ int64  │  int128  │
+├─────────────┼────────────────────┼────────┼──────────┤
+│ elizabeth57 │ Connie Holt        │     97 │      317 │
+│ karenhudson │ Angelica Keith     │     97 │      303 │
+│ jsmith      │ Shane Alexander    │    100 │      301 │
+│ hoganashlee │ Patricia Jefferson │    100 │      289 │
+│ wrightjames │ Monica Mcbride     │     92 │      285 │
+└─────────────┴────────────────────┴────────┴──────────┘
+SELECT
+  (date_diff('year', u.birthdate, DATE '2020-01-01') // 20) * 20 AS age_group,
+  count(DISTINCT u.uuid) AS users,
+  count(*) AS orders,
+  round(avg(o.quantity), 2) AS avg_quantity
+FROM orders o
+JOIN users u ON o.user_uuid = u.uuid
+GROUP BY age_group
+ORDER BY age_group;
+┌───────────┬───────┬────────┬──────────────┐
+│ age_group │ users │ orders │ avg_quantity │
+│   int64   │ int64 │ int64  │    double    │
+├───────────┼───────┼────────┼──────────────┤
+│         0 │    14 │    686 │         3.08 │
+│        20 │     7 │    483 │         3.02 │
+│        40 │    12 │    721 │         3.02 │
+│        60 │    11 │    694 │         3.02 │
+│        80 │     5 │    198 │         3.14 │
+│       100 │     1 │     47 │         3.19 │
+└───────────┴───────┴────────┴──────────────┘
+
+-- Fonctions de fenêtrage
+WITH daily AS (
+  SELECT date::DATE AS day, sum(quantity) AS quantity
+  FROM orders
+  GROUP BY day
+)
+SELECT
+  day,
+  quantity,
+  sum(quantity) OVER (ORDER BY day) AS cumulative,
+  round(avg(quantity) OVER (ORDER BY day ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 1) AS avg_7d
+FROM daily
+ORDER BY day
+LIMIT 10;
+┌────────────┬──────────┬────────────┬────────┐
+│    day     │ quantity │ cumulative │ avg_7d │
+│    date    │  int128  │   int128   │ double │
+├────────────┼──────────┼────────────┼────────┤
+│ 2020-01-01 │       86 │         86 │   86.0 │
+│ 2020-01-02 │       62 │        148 │   74.0 │
+│ 2020-01-03 │       80 │        228 │   76.0 │
+│ 2020-01-04 │       66 │        294 │   73.5 │
+│ 2020-01-05 │       72 │        366 │   73.2 │
+│ 2020-01-06 │       75 │        441 │   73.5 │
+│ 2020-01-07 │       73 │        514 │   73.4 │
+│ 2020-01-08 │       81 │        595 │   72.7 │
+│ 2020-01-09 │       89 │        684 │   76.6 │
+│ 2020-01-10 │       75 │        759 │   75.9 │
+└────────────┴──────────┴────────────┴────────┘
+  10 rows                           4 columns
+SELECT strftime(date, '%Y-%m') AS month, product, sum(quantity) AS quantity
+FROM orders
+GROUP BY month, product
+QUALIFY rank() OVER (PARTITION BY month ORDER BY sum(quantity) DESC) = 1
+ORDER BY month;
+┌─────────┬───────────┬──────────┐
+│  month  │  product  │ quantity │
+│ varchar │  varchar  │  int128  │
+├─────────┼───────────┼──────────┤
+│ 2020-01 │ donut     │      438 │
+│ 2020-02 │ croissant │      392 │
+│ 2020-03 │ bread     │      411 │
+│ 2020-04 │ croissant │      386 │
+└─────────┴───────────┴──────────┘
+
+-- Pivot
+PIVOT (SELECT strftime(date, '%Y-%m') AS month, product, quantity FROM orders)
+ON product
+USING sum(quantity)
+ORDER BY month;
+PIVOT (SELECT strftime(date, '%Y-%m') AS month, product, quantity FROM orders)
+ON product
+USING sum(quantity)
+ORDER BY month
+┌─────────┬────────┬─────────┬────────┬───────────┬────────┬────────┐
+│  month  │ bread  │ brioche │ cookie │ croissant │ donut  │ drink  │
+│ varchar │ int128 │ int128  │ int128 │  int128   │ int128 │ int128 │
+├─────────┼────────┼─────────┼────────┼───────────┼────────┼────────┤
+│ 2020-01 │    315 │     431 │    376 │       360 │    438 │    377 │
+│ 2020-02 │    362 │     350 │    371 │       392 │    314 │    365 │
+│ 2020-03 │    411 │     333 │    340 │       385 │    321 │    402 │
+│ 2020-04 │    332 │     310 │    278 │       386 │    317 │    349 │
+└─────────┴────────┴─────────┴────────┴───────────┴────────┴────────┘
+
+-- Export Parquet
+COPY orders TO (getvariable('bucket') || '/analytics/orders.parquet') (FORMAT parquet);
+SELECT path_in_schema, type, compression, total_compressed_size, total_uncompressed_size
+FROM parquet_metadata(getvariable('bucket') || '/analytics/orders.parquet');
+┌────────────────┬────────────┬─────────────┬───────────────────────┬─────────────────────────┐
+│ path_in_schema │    type    │ compression │ total_compressed_size │ total_uncompressed_size │
+│    varchar     │  varchar   │   varchar   │         int64         │          int64          │
+├────────────────┼────────────┼─────────────┼───────────────────────┼─────────────────────────┤
+│ uuid           │ BYTE_ARRAY │ SNAPPY      │                102191 │                  113189 │
+│ user_uuid      │ BYTE_ARRAY │ SNAPPY      │                  2125 │                    2348 │
+│ date           │ INT64      │ SNAPPY      │                 22667 │                   22661 │
+│ quantity       │ INT64      │ SNAPPY      │                  1242 │                    1245 │
+│ product        │ BYTE_ARRAY │ SNAPPY      │                  1271 │                    1266 │
+└────────────────┴────────────┴─────────────┴───────────────────────┴─────────────────────────┘
+
+-- Partitionnement Hive
+COPY orders TO (getvariable('bucket') || '/analytics/orders_by_product') (FORMAT parquet, PARTITION_BY (product), OVERWRITE_OR_IGNORE);
+SELECT file FROM glob(getvariable('bucket') || '/analytics/orders_by_product/**');
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│                                         file                                          │
+│                                        varchar                                        │
+├───────────────────────────────────────────────────────────────────────────────────────┤
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=bread/data_0.parquet     │
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=brioche/data_0.parquet   │
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=cookie/data_0.parquet    │
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=croissant/data_0.parquet │
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=donut/data_0.parquet     │
+│ s3://user-b-defelice-ece/analytics/orders_by_product/product=drink/data_0.parquet     │
+└───────────────────────────────────────────────────────────────────────────────────────┘
+EXPLAIN ANALYZE
+SELECT count(*)
+FROM read_parquet(getvariable('bucket') || '/analytics/orders_by_product/*/*.parquet')
+WHERE product = 'cookie';
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE SELECT count(*) FROM read_parquet(getvariable('bucket') || '/analytics/orders_by_product/*/*.parquet') WHERE product = 'cookie';
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││         HTTPFS HTTP Stats         ││
+││                                   ││
+││            in: 33.7 KiB           ││
+││            out: 0 bytes           ││
+││              #HEAD: 0             ││
+││              #GET: 3              ││
+││              #PUT: 0              ││
+││              #POST: 0             ││
+││             #DELETE: 0            ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.146s              ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│                           │
+│           0 rows          │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│    UNGROUPED_AGGREGATE    │
+│    ────────────────────   │
+│        Aggregates:        │
+│        count_star()       │
+│                           │
+│                           │
+│                           │
+│           1 row           │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         TABLE_SCAN        │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│       File Filters:       │
+│    (product = 'cookie')   │
+│                           │
+│    Scanning Files: 1/6    │
+│    Total Files Read: 1    │
+│                           │
+│        Filename(s):       │
+│  s3://user-b-defelice-ece │
+│         /analytics        │
+│ /orders_by_product/product│
+│   =cookie/data_0.parquet  │
+│                           │
+│                           │
+│                           │
+│          466 rows         │
+│           0.00s           │
+└───────────────────────────┘
+=== Exercices
+[90m-- Loading resources from init.sql
+[00m
+-- 1. Nombre moyen de commandes par utilisateur, quantité moyenne par commande
+SELECT
+  round(count(*) / count(DISTINCT user_uuid), 2) AS avg_orders_per_user,
+  round(avg(quantity), 2) AS avg_quantity_per_order
+FROM orders;
+┌─────────────────────┬────────────────────────┐
+│ avg_orders_per_user │ avg_quantity_per_order │
+│       double        │         double         │
+├─────────────────────┼────────────────────────┤
+│               56.58 │                   3.05 │
+└─────────────────────┴────────────────────────┘
+
+-- 2. Première et dernière commande de chaque utilisateur, et nombre de jours entre les deux
+SELECT
+  u.username,
+  min(o.date) AS first_order,
+  max(o.date) AS last_order,
+  date_diff('day', min(o.date), max(o.date)) AS days_between
+FROM orders o
+JOIN users u ON o.user_uuid = u.uuid
+GROUP BY ALL
+ORDER BY first_order
+LIMIT 10;
+┌────────────────┬───────────────────────────────┬───────────────────────────────┬──────────────┐
+│    username    │          first_order          │          last_order           │ days_between │
+│    varchar     │   timestamp with time zone    │   timestamp with time zone    │    int64     │
+├────────────────┼───────────────────────────────┼───────────────────────────────┼──────────────┤
+│ garzaanthony   │ 2020-01-01 00:02:17.891488+00 │ 2020-01-04 10:28:17.77967+00  │            3 │
+│ blairamanda    │ 2020-01-04 11:59:53.242326+00 │ 2020-01-05 03:02:14.273688+00 │            1 │
+│ elizabethmiles │ 2020-01-05 04:50:10.331513+00 │ 2020-01-06 01:03:27.852411+00 │            1 │
+│ ithomas        │ 2020-01-06 02:48:59.231613+00 │ 2020-01-07 16:59:25.164747+00 │            1 │
+│ kayla51        │ 2020-01-07 17:49:04.785279+00 │ 2020-01-07 20:31:55.964946+00 │            0 │
+│ millertodd     │ 2020-01-07 21:58:38.925654+00 │ 2020-01-07 22:48:22.203716+00 │            0 │
+│ perezrebecca   │ 2020-01-07 23:37:11.211033+00 │ 2020-01-08 10:45:20.193352+00 │            1 │
+│ wrightjames    │ 2020-01-08 11:20:45.094193+00 │ 2020-01-12 06:23:02.514874+00 │            4 │
+│ smoore         │ 2020-01-12 07:14:53.401298+00 │ 2020-01-12 23:09:49.797471+00 │            0 │
+│ sarah35        │ 2020-01-13 00:10:01.066635+00 │ 2020-01-15 17:53:07.152912+00 │            2 │
+└────────────────┴───────────────────────────────┴───────────────────────────────┴──────────────┘
+  10 rows                                                                             4 columns
+
+-- 3. Heure de la journée avec la plus grande quantité vendue
+SELECT hour(date) AS hour, sum(quantity) AS quantity
+FROM orders
+GROUP BY hour
+ORDER BY quantity DESC
+LIMIT 3;
+┌───────┬──────────┐
+│ hour  │ quantity │
+│ int64 │  int128  │
+├───────┼──────────┤
+│     6 │      385 │
+│    15 │      382 │
+│     0 │      379 │
+└───────┴──────────┘
+
+-- 4. Variation mensuelle de la quantité vendue par produit, en pourcentage
+WITH monthly AS (
+  SELECT product, strftime(date, '%Y-%m') AS month, sum(quantity) AS quantity
+  FROM orders
+  GROUP BY ALL
+)
+SELECT
+  product,
+  month,
+  quantity,
+  round(100 * (quantity - lag(quantity) OVER w) / lag(quantity) OVER w, 1) AS variation_pct
+FROM monthly
+WINDOW w AS (PARTITION BY product ORDER BY month)
+ORDER BY product, month;
+┌───────────┬─────────┬──────────┬───────────────┐
+│  product  │  month  │ quantity │ variation_pct │
+│  varchar  │ varchar │  int128  │    double     │
+├───────────┼─────────┼──────────┼───────────────┤
+│ bread     │ 2020-01 │      315 │          NULL │
+│ bread     │ 2020-02 │      362 │          14.9 │
+│ bread     │ 2020-03 │      411 │          13.5 │
+│ bread     │ 2020-04 │      332 │         -19.2 │
+│ brioche   │ 2020-01 │      431 │          NULL │
+│ brioche   │ 2020-02 │      350 │         -18.8 │
+│ brioche   │ 2020-03 │      333 │          -4.9 │
+│ brioche   │ 2020-04 │      310 │          -6.9 │
+│ cookie    │ 2020-01 │      376 │          NULL │
+│ cookie    │ 2020-02 │      371 │          -1.3 │
+│ cookie    │ 2020-03 │      340 │          -8.4 │
+│ cookie    │ 2020-04 │      278 │         -18.2 │
+│ croissant │ 2020-01 │      360 │          NULL │
+│ croissant │ 2020-02 │      392 │           8.9 │
+│ croissant │ 2020-03 │      385 │          -1.8 │
+│ croissant │ 2020-04 │      386 │           0.3 │
+│ donut     │ 2020-01 │      438 │          NULL │
+│ donut     │ 2020-02 │      314 │         -28.3 │
+│ donut     │ 2020-03 │      321 │           2.2 │
+│ donut     │ 2020-04 │      317 │          -1.2 │
+│ drink     │ 2020-01 │      377 │          NULL │
+│ drink     │ 2020-02 │      365 │          -3.2 │
+│ drink     │ 2020-03 │      402 │          10.1 │
+│ drink     │ 2020-04 │      349 │         -13.2 │
+└───────────┴─────────┴──────────┴───────────────┘
+  24 rows                              4 columns
+
+-- 5. Utilisateurs ayant commandé chaque produit au moins une fois
+SELECT u.username, count(DISTINCT o.product) AS products
+FROM orders o
+JOIN users u ON o.user_uuid = u.uuid
+GROUP BY ALL
+HAVING count(DISTINCT o.product) = (SELECT count(DISTINCT product) FROM orders)
+ORDER BY u.username;
+┌──────────────────┬──────────┐
+│     username     │ products │
+│     varchar      │  int64   │
+├──────────────────┼──────────┤
+│ ahancock         │        6 │
+│ atkinsbarbara    │        6 │
+│ blairamanda      │        6 │
+│ bruce43          │        6 │
+│ calebrussell     │        6 │
+│ cgrimes          │        6 │
+│ charleslandry    │        6 │
+│ cstone           │        6 │
+│ danamullins      │        6 │
+│ danderson        │        6 │
+│ dayderek         │        6 │
+│ debra12          │        6 │
+│ elizabeth57      │        6 │
+│ elizabeth65      │        6 │
+│ elizabethmiles   │        6 │
+│ farrelldebra     │        6 │
+│ garzaanthony     │        6 │
+│ gilbertwilliam   │        6 │
+│ hhoffman         │        6 │
+│ hoganashlee      │        6 │
+│      ·           │        · │
+│      ·           │        · │
+│      ·           │        · │
+│ karenhudson      │        6 │
+│ lozanojulie      │        6 │
+│ lucasrodney      │        6 │
+│ mariahdavis      │        6 │
+│ mccormickdeborah │        6 │
+│ mcmillandennis   │        6 │
+│ michael22        │        6 │
+│ nicolejohnson    │        6 │
+│ pvalentine       │        6 │
+│ robin74          │        6 │
+│ ronaldstephens   │        6 │
+│ sarah35          │        6 │
+│ smoore           │        6 │
+│ snguyen          │        6 │
+│ stephen00        │        6 │
+│ trose            │        6 │
+│ vanessafernandez │        6 │
+│ wilsontara       │        6 │
+│ wrightjames      │        6 │
+│ yobrien          │        6 │
+└──────────────────┴──────────┘
+  45 rows (40 shown)2 columns
+SELECT count(*) AS users_all_products FROM (
+  SELECT user_uuid FROM orders GROUP BY user_uuid
+  HAVING count(DISTINCT product) = (SELECT count(DISTINCT product) FROM orders)
+);
+┌────────────────────┐
+│ users_all_products │
+│       int64        │
+├────────────────────┤
+│                 45 │
+└────────────────────┘
+=== CSV vs Parquet à grande échelle
+   Building bigdata @ file:///home/onyxia/work/bigdata
+      Built bigdata @ file:///home/onyxia/work/bigdata
+Downloading duckdb (23.2MiB)
+ Downloaded duckdb
+Uninstalled 1 package in 2ms
+Installed 2 packages in 7ms
+
+real	0m26.161s
+user	0m25.748s
+sys	0m0.420s
+-rw-r--r-- 1 onyxia users 29M Oct 30 13:24 orders_large.csv
+Completed 1.0 MiB/28.2 MiB (6.2 MiB/s) with 1 file(s) remainingCompleted 2.0 MiB/28.2 MiB (11.3 MiB/s) with 1 file(s) remainingCompleted 3.0 MiB/28.2 MiB (16.3 MiB/s) with 1 file(s) remainingCompleted 4.0 MiB/28.2 MiB (21.2 MiB/s) with 1 file(s) remainingCompleted 5.0 MiB/28.2 MiB (25.9 MiB/s) with 1 file(s) remainingCompleted 6.0 MiB/28.2 MiB (30.5 MiB/s) with 1 file(s) remainingCompleted 7.0 MiB/28.2 MiB (34.9 MiB/s) with 1 file(s) remainingCompleted 8.0 MiB/28.2 MiB (38.8 MiB/s) with 1 file(s) remainingCompleted 9.0 MiB/28.2 MiB (33.2 MiB/s) with 1 file(s) remainingCompleted 10.0 MiB/28.2 MiB (35.7 MiB/s) with 1 file(s) remainingCompleted 11.0 MiB/28.2 MiB (38.6 MiB/s) with 1 file(s) remainingCompleted 12.0 MiB/28.2 MiB (40.4 MiB/s) with 1 file(s) remainingCompleted 13.0 MiB/28.2 MiB (42.8 MiB/s) with 1 file(s) remainingCompleted 14.0 MiB/28.2 MiB (45.6 MiB/s) with 1 file(s) remainingCompleted 15.0 MiB/28.2 MiB (47.1 MiB/s) with 1 file(s) remainingCompleted 16.0 MiB/28.2 MiB (49.2 MiB/s) with 1 file(s) remainingCompleted 17.0 MiB/28.2 MiB (52.1 MiB/s) with 1 file(s) remainingCompleted 18.0 MiB/28.2 MiB (53.1 MiB/s) with 1 file(s) remainingCompleted 19.0 MiB/28.2 MiB (55.3 MiB/s) with 1 file(s) remainingCompleted 20.0 MiB/28.2 MiB (58.1 MiB/s) with 1 file(s) remainingCompleted 21.0 MiB/28.2 MiB (59.6 MiB/s) with 1 file(s) remainingCompleted 22.0 MiB/28.2 MiB (62.1 MiB/s) with 1 file(s) remainingCompleted 23.0 MiB/28.2 MiB (64.6 MiB/s) with 1 file(s) remainingCompleted 24.0 MiB/28.2 MiB (66.8 MiB/s) with 1 file(s) remainingCompleted 25.0 MiB/28.2 MiB (69.0 MiB/s) with 1 file(s) remainingCompleted 26.0 MiB/28.2 MiB (71.0 MiB/s) with 1 file(s) remainingCompleted 27.0 MiB/28.2 MiB (73.1 MiB/s) with 1 file(s) remainingCompleted 28.0 MiB/28.2 MiB (75.3 MiB/s) with 1 file(s) remainingCompleted 28.2 MiB/28.2 MiB (47.3 MiB/s) with 1 file(s) remainingupload: ./orders_large.csv to s3://user-b-defelice-ece/large/orders.csv
+[90m-- Loading resources from init.sql
+[00m.timer on
+COPY (FROM read_csv(getvariable('bucket') || '/large/orders.csv', strict_mode=false))
+TO (getvariable('bucket') || '/large/orders.parquet') (FORMAT parquet);
+Run Time (s): real 1.522 user 1.279450 sys 0.403053
+SELECT count(*) FROM read_parquet(getvariable('bucket') || '/large/orders.parquet');
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│       252416 │
+└──────────────┘
+Run Time (s): real 0.059 user 0.031211 sys 0.005093
+SELECT row_group_id, row_group_num_rows, stats_min, stats_max
+FROM parquet_metadata(getvariable('bucket') || '/large/orders.parquet')
+WHERE path_in_schema = 'date';
+┌──────────────┬────────────────────┬───────────────────────────────┬───────────────────────────────┐
+│ row_group_id │ row_group_num_rows │           stats_min           │           stats_max           │
+│    int64     │       int64        │            varchar            │            varchar            │
+├──────────────┼────────────────────┼───────────────────────────────┼───────────────────────────────┤
+│            0 │             123573 │ 2020-01-01 00:44:02.671276+00 │ 2034-02-04 20:48:18.716516+00 │
+│            1 │             124276 │ 2034-02-04 21:40:36.580081+00 │ 2048-04-10 00:20:51.481804+00 │
+│            2 │               4567 │ 2048-04-10 01:37:01.674368+00 │ 2048-10-17 07:13:34.97841+00  │
+└──────────────┴────────────────────┴───────────────────────────────┴───────────────────────────────┘
+Run Time (s): real 0.042 user 0.026870 sys 0.002935
+2026-10-30 13:24:03   29574123 orders.csv
+2026-10-30 13:24:05   11532863 orders.parquet
+FROM read_csv(getvariable('bucket') || '/large/orders.csv', strict_mode=false) SELECT product, sum(quantity) GROUP BY product
+││            in: 28.2 MiB           ││
+││              #GET: 1              ││
+││               Total Time: 1.23s              ││
+FROM read_parquet(getvariable('bucket') || '/large/orders.parquet') SELECT product, sum(quantity) GROUP BY product
+││           in: 203.5 KiB           ││
+││              #GET: 4              ││
+││              Total Time: 0.310s              ││
+FROM read_parquet(getvariable('bucket') || '/large/orders.parquet') SELECT count(*) WHERE date >= '2100-01-01'
+││            in: 16.0 KiB           ││
+││              #GET: 1              ││
+││              Total Time: 0.136s              ││
+=== API Python
+2020-01	744	2297
+2020-02	696	2154
+2020-03	744	2192
+2020-04	645	1972
+2020-01	128	376
+2020-02	121	371
+2020-03	122	340
+2020-04	95	278
+=== Terminé

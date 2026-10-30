@@ -1,0 +1,76 @@
+https://s3.seaweedfs.adm.adaltas.cloud user-b-defelice-ece
+=== Métadonnées système : ETag vs md5
+Completed 7.2 KiB/7.2 KiB (42.9 KiB/s) with 1 file(s) remainingupload: ./users.csv to s3://user-b-defelice-ece/bronze/users.csv
+{
+    "AcceptRanges": "bytes",
+    "LastModified": "2026-10-30T13:55:03+00:00",
+    "ContentLength": 7351,
+    "ETag": "\"4b1324359d7e5872c9640c29821963d9\"",
+    "VersionId": "null",
+    "ContentEncoding": "aws-chunked",
+    "ContentType": "text/csv",
+    "Metadata": {}
+}
+4b1324359d7e5872c9640c29821963d9  users.csv
+=== Métadonnées utilisateur
+Completed 7.2 KiB/7.2 KiB (48.7 KiB/s) with 1 file(s) remainingupload: ./users.csv to s3://user-b-defelice-ece/bronze/users.csv
+{
+  "rows": "50",
+  "source": "dataset_users.py",
+  "version": "1"
+}
+=== Presigned URL GET
+https://s3.seaweedfs.adm.adaltas.cloud/user-b-defelice-ece/bronze/users.csv?<signature masquée>
+uuid,username,name,sex,address,mail,birthdate
+bdd640fb-0667-4ad1-9c80-317fa3b1799d,garzaanthony,Charles Garcia,M,"908 Jennifer Squares
+Robinsonshire, KY 01352",helenpeterson@gmail.com,1935-10-21
+=== Presigned URL GET expirée (5 s)
+HTTP 403
+=== Presigned URL PUT (boto3)
+Downloading botocore (15.4MiB)
+ Downloaded botocore
+Installed 7 packages in 90ms
+HTTP 403
+=== Lifecycle
+{
+    "TransitionDefaultMinimumObjectSize": "all_storage_classes_128K",
+    "Rules": [
+        {
+            "Expiration": {
+                "Days": 30
+            },
+            "ID": "expire-large-after-30-days",
+            "Filter": {
+                "Prefix": "large/"
+            },
+            "Status": "Enabled"
+        },
+        {
+            "ID": "delete-noncurrent-versions",
+            "Filter": {
+                "Prefix": ""
+            },
+            "Status": "Enabled",
+            "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 7
+            }
+        },
+        {
+            "ID": "abort-incomplete-multipart",
+            "Filter": {
+                "Prefix": ""
+            },
+            "Status": "Enabled",
+            "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 7
+            }
+        }
+    ]
+}
+=== Consistency
+Completed 7.2 KiB/7.2 KiB (51.1 KiB/s) with 1 file(s) remainingupload: ./users.csv to s3://user-b-defelice-ece/bronze/users.csv
+Completed 7.2 KiB/7.2 KiB (86.6 KiB/s) with 1 file(s) remainingwarning: Skipping file /dev/null. Successfully Downloaded /dev/null but was unable to update the last modified time. The file was downloaded, but attempting to modify the utime of the file failed. Is the file owned by another user?
+Completed 7.2 KiB/7.2 KiB (86.6 KiB/s) with 1 file(s) remainingdownload: s3://user-b-defelice-ece/bronze/users.csv to ../../../../dev/null
+=== Nettoyage
+delete: s3://user-b-defelice-ece/bronze/upload.csv
+=== Terminé

@@ -30,3 +30,18 @@ appliquée, même pour l'utilisateur authentifié propriétaire du bucket. L'ACL
 - Le Job de l'énoncé est refusé par le quota du namespace Onyxia (`failed quota: onyxia-quota: must specify
   limits.cpu`) : un `ResourceQuota` qui limite le CPU impose que chaque conteneur déclare `limits.cpu`. Ajout de
   `cpu: 500m` dans les limits du Job.
+
+**Observations complémentaires** (`bash lab-s3-observations.sh`, sortie dans `sortie-s3-observations.txt`)
+- Métadonnées système : l'ETag `4b1324359d7e5872c9640c29821963d9` est identique au `md5sum` de `users.csv`. SeaweedFS
+  renvoie aussi `ContentEncoding: aws-chunked`, reliquat de l'upload en streaming de l'AWS CLI récent.
+- Métadonnées utilisateur : `--metadata` est supporté, `head-object` renvoie
+  `{"rows": "50", "source": "dataset_users.py", "version": "1"}`.
+- Presigned URL GET : `curl` télécharge le fichier sans identifiants ; une URL de 5 s utilisée après 7 s renvoie
+  `HTTP 403`.
+- Presigned URL PUT générée avec boto3 : refusée, `curl -T` renvoie `HTTP 403` et `bronze/upload.csv` n'est pas créé.
+  Contrairement au GET signé par l'AWS CLI, la signature boto3 n'est pas acceptée par SeaweedFS (différences probables :
+  style d'adressage ou en-têtes de checksum ajoutés par les versions récentes de botocore).
+- Lifecycle : `put-bucket-lifecycle-configuration` est accepté sans erreur et `get-bucket-lifecycle-configuration`
+  relit les 3 règles. L'application effective (expiration après 30 jours) n'est pas vérifiable pendant le lab.
+- Consistency : le `GET` qui suit immédiatement le `PUT` réussit (« immediately available ») : lecture après écriture
+  forte. Le warning sur `/dev/null` vient seulement de l'impossibilité de modifier sa date, pas de S3.

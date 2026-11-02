@@ -21,7 +21,11 @@ models:
 
 seeds:
   lab_medallion:
-    +column_types:
-      code: varchar
-      zip3_min: varchar
-      zip3_max: varchar
+    states:
+      +column_types:
+        code: varchar
+    zip_ranges:
+      +column_types:
+        code: varchar
+        zip3_min: varchar
+        zip3_max: varchar

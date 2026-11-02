@@ -8,9 +8,28 @@ export LAB_BUCKET_NAME="$KUBERNETES_NAMESPACE"
 echo "$LAB_BUCKET_NAME"
 aws s3 --profile default ls "s3://$LAB_BUCKET_NAME/bronze/" || exit 1
 
+# Le CLI duckdb d'Onyxia (1.5.5) est plus ancien que la librairie installée avec dbt-duckdb
+# et ne sait pas lire lab_medallion.duckdb : on interroge la base avec le DuckDB Python du projet.
+q() {
+  echo "> $1"
+  uv run python - "$1" <<'PY'
+import sys, time
+import duckdb
+
+con = duckdb.connect("lab_medallion.duckdb", read_only=True)
+start = time.perf_counter()
+result = con.sql(sys.argv[1])
+if result is not None:
+    result.show(max_rows=20)
+print(f"({time.perf_counter() - start:.3f}s)")
+PY
+}
+
 echo "=== Installation"
 uv add dbt-duckdb
 uv run dbt --version
+uv run python -c "import duckdb; print('duckdb python', duckdb.__version__)"
+duckdb --version
 
 cd lab_medallion
 echo "=== dbt debug"
@@ -28,31 +47,28 @@ echo "=== dbt run silver"
 uv run dbt run --select silver
 echo "--- compilé"
 cat target/compiled/lab_medallion/models/silver/stg_users.sql
+echo
 echo "--- exécuté"
 cat target/run/lab_medallion/models/silver/stg_users.sql
 
-duckdb -readonly lab_medallion.duckdb <<'SQL'
-SELECT table_schema, table_name, table_type FROM information_schema.tables ORDER BY ALL;
-SELECT username, username_normalized, street, city, state, zip_code FROM main_silver.stg_users LIMIT 3;
-DESCRIBE main_silver.stg_orders;
-DESCRIBE main_silver.stg_users;
--- Exercice 3 : dates de naissance invalides remplacées par NULL
-SELECT birthdate_is_valid, count(*) AS users FROM main_silver.stg_users GROUP BY ALL;
--- Commandes qui auraient échoué au test avec les dates brutes
-SELECT count(*) AS orders_before_birth
-FROM main_silver.stg_orders o
-JOIN read_csv('s3://' || getenv('LAB_BUCKET_NAME') || '/bronze/users.csv') u ON o.user_id = cast(u.uuid AS uuid)
-WHERE o.ordered_at < u.birthdate;
--- Taille d'un UUID en VARCHAR
-SELECT octet_length(cast(order_id AS varchar)) AS varchar_bytes FROM main_silver.stg_orders LIMIT 1;
-SQL
+q "SELECT table_schema, table_name, table_type FROM information_schema.tables ORDER BY ALL"
+q "SELECT username, username_normalized, street, city, state, zip_code FROM main_silver.stg_users LIMIT 3"
+q "DESCRIBE main_silver.stg_orders"
+q "DESCRIBE main_silver.stg_users"
+# Exercice 3 : dates de naissance invalides remplacées par NULL
+q "SELECT birthdate_is_valid, count(*) AS users FROM main_silver.stg_users GROUP BY ALL"
+# Commandes qui auraient échoué au test avec les dates brutes (le 288 de l'énoncé)
+q "SELECT count(*) AS orders_before_birth
+   FROM main_silver.stg_orders o
+   JOIN read_csv('s3://$LAB_BUCKET_NAME/bronze/users.csv') u ON o.user_id = cast(u.uuid AS uuid)
+   WHERE o.ordered_at < u.birthdate"
+# Taille d'un UUID en VARCHAR
+q "SELECT octet_length(cast(order_id AS varchar)) AS varchar_bytes FROM main_silver.stg_orders LIMIT 1"
 
 echo "=== dbt test silver (avec stockage des échecs)"
 uv run dbt test --select silver --store-failures
-duckdb -readonly lab_medallion.duckdb <<'SQL'
-SELECT table_name FROM information_schema.tables WHERE table_schema = 'main_dbt_test__audit' ORDER BY ALL;
-SELECT * FROM main_dbt_test__audit.assert_users_zip_matches_state LIMIT 5;
-SQL
+q "SELECT table_name FROM information_schema.tables WHERE table_schema = 'main_dbt_test__audit' ORDER BY ALL"
+q "SELECT * FROM main_dbt_test__audit.assert_users_zip_matches_state LIMIT 5"
 
 echo "=== Pipeline complet"
 rm -f lab_medallion.duckdb
@@ -70,39 +86,30 @@ ls -lh target/static_index.html
 
 echo "=== Export Parquet silver"
 for model in users orders; do
-  duckdb lab_medallion.duckdb -c "
-    COPY (SELECT * FROM main_silver.stg_$model)
-    TO 's3://$LAB_BUCKET_NAME/silver/dbt/$model.parquet' (FORMAT parquet);"
+  q "COPY (SELECT * FROM main_silver.stg_$model) TO 's3://$LAB_BUCKET_NAME/silver/dbt/$model.parquet' (FORMAT parquet)"
 done
 aws s3 --profile default ls "s3://$LAB_BUCKET_NAME/silver/dbt/"
-duckdb -readonly lab_medallion.duckdb -c "
-  SELECT sex, count(*) AS users
-  FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/users.parquet')
-  GROUP BY sex ORDER BY sex;"
+q "SELECT * FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/users.parquet') LIMIT 5"
+q "SELECT sex, count(*) AS users FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/users.parquet') GROUP BY sex ORDER BY sex"
 # Exercice : le Parquet et la vue doivent contenir exactement les mêmes lignes
-duckdb -readonly lab_medallion.duckdb -c "
-  SELECT
-    (SELECT count(*) FROM main_silver.stg_orders) AS view_rows,
-    (SELECT count(*) FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet')) AS parquet_rows,
-    (SELECT count(*) FROM (
-      FROM main_silver.stg_orders
-      EXCEPT ALL
-      FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet'))) AS only_in_view,
-    (SELECT count(*) FROM (
-      FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet')
-      EXCEPT ALL
-      FROM main_silver.stg_orders)) AS only_in_parquet;"
+q "SELECT
+     (SELECT count(*) FROM main_silver.stg_orders) AS view_rows,
+     (SELECT count(*) FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet')) AS parquet_rows,
+     (SELECT count(*) FROM (FROM main_silver.stg_orders
+       EXCEPT ALL FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet'))) AS only_in_view,
+     (SELECT count(*) FROM (FROM read_parquet('s3://$LAB_BUCKET_NAME/silver/dbt/orders.parquet')
+       EXCEPT ALL FROM main_silver.stg_orders)) AS only_in_parquet"
 
 echo "=== Exercice 5 : matérialisation en table"
+echo "--- en vue"
 ls -lh lab_medallion.duckdb
-duckdb -readonly lab_medallion.duckdb -cmd ".timer on" -c "SELECT count(*) FROM main_silver.stg_orders;"
+q "SELECT count(*) FROM main_silver.stg_orders"
 sed -i 's/+materialized: view/+materialized: table/' dbt_project.yml
 uv run dbt build --select silver
-duckdb -readonly lab_medallion.duckdb -c "
-  SELECT table_schema, table_name, table_type FROM information_schema.tables
-  WHERE table_schema = 'main_silver' ORDER BY ALL;"
+echo "--- en table"
+q "SELECT table_schema, table_name, table_type FROM information_schema.tables WHERE table_schema = 'main_silver' ORDER BY ALL"
 ls -lh lab_medallion.duckdb
-duckdb -readonly lab_medallion.duckdb -cmd ".timer on" -c "SELECT count(*) FROM main_silver.stg_orders;"
+q "SELECT count(*) FROM main_silver.stg_orders"
 # Restauration de la configuration d'origine
 sed -i 's/+materialized: table/+materialized: view/' dbt_project.yml
 uv run dbt build --select silver

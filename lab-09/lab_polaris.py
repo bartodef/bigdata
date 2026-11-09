@@ -188,7 +188,7 @@ elif ETAPE == "exo2":
               {"catalogRole": {"name": "silver_reader"}}, token)[0])
     st, rep = api("POST", "/api/management/v1/principals", {"principal": {"name": "reader_silver"}}, token)
     if st != 201:
-        st, rep = api("POST", "/api/management/v1/principals/reader_silver/rotate", None, token)
+        st, rep = api("POST", "/api/management/v1/principals/reader_silver/reset", None, token)
     cred = f"{rep['credentials']['clientId']}:{rep['credentials']['clientSecret']}"
     print(api("PUT", "/api/management/v1/principals/reader_silver/principal-roles",
               {"principalRole": {"name": "silver_analyst"}}, token)[0])
@@ -212,6 +212,13 @@ elif ETAPE == "exo2":
     essai(spark, "SHOW TABLES IN polaris.gold")
     essai(spark, "SELECT * FROM polaris.gold.orders_by_product")
     essai(spark, "INSERT INTO polaris.silver.orders SELECT * FROM polaris.silver.orders LIMIT 1")
+    spark.stop()
+
+elif ETAPE == "schema":
+    # (debug) rejoue seulement la section "Schema en dev"
+    spark = session("dev")
+    spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
+    spark.sql("DESCRIBE polaris.silver.users").show()
     spark.stop()
 
 elif ETAPE == "reset":

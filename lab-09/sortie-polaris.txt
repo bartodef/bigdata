@@ -1,0 +1,632 @@
+################ dev
+Polaris principal: dev
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+=== SHOW NAMESPACES
++---------+
+|namespace|
++---------+
+|     gold|
+|   silver|
++---------+
+
++---------+
+|namespace|
++---------+
+|   silver|
++---------+
+
+=== Register de silver.orders
+version-hint.text = 5
+75 objets sous warehouse/silver/orders/
+   warehouse/silver/orders/data/00000-10-e7e54f32-08a0-42f7-8b21-7d88fbaa7b84-0-00001.parquet
+   warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet
+   warehouse/silver/orders/data/00000-21-eb060483-51f7-43fe-8e54-b4da02c60556-0-00001.parquet
+   warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-22856c59-8fbc-42bc-bc94-c1e4b1d70890-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2ad5296a-2d75-4def-b0b4-4ca0aec533d3-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2b163bd4-d59c-4b7a-9eb8-0ce1f98aaf6d-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-ec67caa0-0a4a-4495-8623-48d6caf8ff33-0-00001.parquet
+   warehouse/silver/orders/data/20261104_173337_00078_2sz6w-67e47053-e692-42ab-b01a-93845ed38ccd.parquet
+   warehouse/silver/orders/data/20261104_173351_00083_2sz6w-bfc22cd3-b469-4510-9ea6-ea122357cc42.parquet
+   warehouse/silver/orders/data/20261104_180632_00185_2sz6w-118a9427-884a-4f08-8811-e6e9b5b35120.parquet
+   warehouse/silver/orders/data/20261104_180639_00190_2sz6w-28520310-3a11-4afe-b054-6a3697d537b6.parquet
+   warehouse/silver/orders/data/20261104_181259_00269_2sz6w-8f24f5e7-33f1-4b51-ba9c-f717ac9cd3fe.parquet
+   warehouse/silver/orders/data/20261104_181304_00274_2sz6w-46cbac2d-2d23-43c8-9c94-40f1a4b9eb0d.parquet
+   warehouse/silver/orders/data/20261104_182943_00108_eez4h-1bafc5aa-3fb4-45ea-846b-f0bfa081fe5a.parquet
+   warehouse/silver/orders/data/20261104_182955_00113_eez4h-97e793c5-a477-4e3d-b6d1-6e860d9e3cac.parquet
+   warehouse/silver/orders/data/20261109_092009_00194_ttkbn-570a7ed7-ecc5-4e64-a40e-f7ecc9e6621f.parquet
+   warehouse/silver/orders/data/20261109_092018_00199_ttkbn-3c576400-8513-4d1e-8262-1c8c528bfa8e.parquet
+   warehouse/silver/orders/metadata/00000-348e6be8-e968-4101-a1ce-f5872dbaee6d.metadata.json
+   warehouse/silver/orders/metadata/00000-49583db4-0ed4-4693-b1ac-98f331911620.metadata.json
+   warehouse/silver/orders/metadata/00000-57f85e38-5c82-4804-ba30-0c7c5e4c564f.metadata.json
+   warehouse/silver/orders/metadata/00000-87ba844c-0bc7-4577-b05a-6b047bc18408.metadata.json
+   warehouse/silver/orders/metadata/00000-abbf4732-7686-4202-8a6b-6cc709b5dbf1.metadata.json
+   warehouse/silver/orders/metadata/00000-d988a895-b9a7-4f9f-9e83-2335d664d716.metadata.json
+   warehouse/silver/orders/metadata/00001-087274d0-27a7-4ede-b3db-fcbb3202e6ec.metadata.json
+   warehouse/silver/orders/metadata/00001-09c7459e-558a-481e-a914-92a0d065bee0.metadata.json
+   warehouse/silver/orders/metadata/00001-34f63d2b-f58b-4674-bad0-a31a13c4d858.metadata.json
+   warehouse/silver/orders/metadata/00001-c1627c2f-ad06-48d5-9d25-4bdad7763a20.metadata.json
+   warehouse/silver/orders/metadata/00001-d216596f-7d5e-4e2b-9756-b9834e4aabd5.metadata.json
+   warehouse/silver/orders/metadata/00002-0d84fbcc-f987-496e-b9f4-b7799cc45b67.metadata.json
+   warehouse/silver/orders/metadata/00002-5f6b4f46-ce2f-4fbf-b393-a0380a20a943.metadata.json
+   warehouse/silver/orders/metadata/00002-71305515-159f-490d-a8b2-60314d1b7096.metadata.json
+   warehouse/silver/orders/metadata/0c74b08e-3f54-406a-919d-566b96c14c82-m0.avro
+   warehouse/silver/orders/metadata/10324c63-ba25-404f-ac91-9f669b909168-m0.avro
+   warehouse/silver/orders/metadata/22c2682c-1f9a-4b28-b840-bcbb00a73dce-m0.avro
+   warehouse/silver/orders/metadata/27744222-91b4-4c00-a0ba-087e46af4363-m0.avro
+   warehouse/silver/orders/metadata/3723b312-7118-4cab-914f-c91410568c5c-m0.avro
+   warehouse/silver/orders/metadata/504b72e4-c751-42fd-93f4-b49c164a945a-m0.avro
+   warehouse/silver/orders/metadata/64d3bf88-c29a-424f-9280-70e4f228b11d-m0.avro
+   warehouse/silver/orders/metadata/99359b12-9e44-4903-838f-436c1ac35ed5-m0.avro
+   warehouse/silver/orders/metadata/9d9d792d-51bf-46af-8c88-066067d250d5-m0.avro
+   warehouse/silver/orders/metadata/a4eaf888-042a-42b4-ba5f-88dc63dadafb-m0.avro
+   warehouse/silver/orders/metadata/bb3b8e44-d5e9-4de2-afe0-28416a3cadc2-m0.avro
+   warehouse/silver/orders/metadata/cd480c6b-bca1-46d4-ba7b-bf8595e4d71c-m0.avro
+   warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+   warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro
+   warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+   warehouse/silver/orders/metadata/e86557f3-6c2a-4c6c-97e4-acc6407620da-m0.avro
+   warehouse/silver/orders/metadata/f3fe3211-6b04-4f61-ad3b-9926bd5bb73c-m0.avro
+   warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+   warehouse/silver/orders/metadata/snap-1389325807751875982-1-27744222-91b4-4c00-a0ba-087e46af4363.avro
+   warehouse/silver/orders/metadata/snap-1779798678429895261-1-a4eaf888-042a-42b4-ba5f-88dc63dadafb.avro
+   warehouse/silver/orders/metadata/snap-2278175157894592384-1-22c2682c-1f9a-4b28-b840-bcbb00a73dce.avro
+   warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+   warehouse/silver/orders/metadata/snap-5270476602061442632-1-99359b12-9e44-4903-838f-436c1ac35ed5.avro
+   warehouse/silver/orders/metadata/snap-5470556266271378472-1-e86557f3-6c2a-4c6c-97e4-acc6407620da.avro
+   warehouse/silver/orders/metadata/snap-5508946757586184856-1-d75aa0dd-1d85-4ae5-8e37-ed111bddea29.avro
+   warehouse/silver/orders/metadata/snap-6565903723803173377-1-504b72e4-c751-42fd-93f4-b49c164a945a.avro
+   warehouse/silver/orders/metadata/snap-6725585043876083813-1-10324c63-ba25-404f-ac91-9f669b909168.avro
+   warehouse/silver/orders/metadata/snap-7189824778970656950-1-0c74b08e-3f54-406a-919d-566b96c14c82.avro
+   warehouse/silver/orders/metadata/snap-719925307057886898-1-3723b312-7118-4cab-914f-c91410568c5c.avro
+   warehouse/silver/orders/metadata/snap-7521881510251419389-1-bb3b8e44-d5e9-4de2-afe0-28416a3cadc2.avro
+   warehouse/silver/orders/metadata/snap-8348085007554398882-1-9d9d792d-51bf-46af-8c88-066067d250d5.avro
+   warehouse/silver/orders/metadata/snap-844076832312245170-1-f3fe3211-6b04-4f61-ad3b-9926bd5bb73c.avro
+   warehouse/silver/orders/metadata/snap-8598956244605314146-1-cd480c6b-bca1-46d4-ba7b-bf8595e4d71c.avro
+   warehouse/silver/orders/metadata/snap-8768276225386078794-1-64d3bf88-c29a-424f-9280-70e4f228b11d.avro
+   warehouse/silver/orders/metadata/snap-9095799915095505145-1-e011ebba-e73d-4d1a-91c5-b2c6cd9a9312.avro
+   warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+   warehouse/silver/orders/metadata/v1.metadata.json
+   warehouse/silver/orders/metadata/v2.metadata.json
+   warehouse/silver/orders/metadata/v3.metadata.json
+   warehouse/silver/orders/metadata/v4.metadata.json
+   warehouse/silver/orders/metadata/v5.metadata.json
+   warehouse/silver/orders/metadata/version-hint.text
++-------------------+-------------------+----------------------+
+|current_snapshot_id|total_records_count|total_data_files_count|
++-------------------+-------------------+----------------------+
+|5508946757586184856|               2834|                     4|
++-------------------+-------------------+----------------------+
+
++------+
+|orders|
++------+
+|  2834|
++------+
+
++------+
+|orders|
++------+
+|  2834|
++------+
+
+75 objets sous warehouse/silver/orders/
+   warehouse/silver/orders/data/00000-10-e7e54f32-08a0-42f7-8b21-7d88fbaa7b84-0-00001.parquet
+   warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet
+   warehouse/silver/orders/data/00000-21-eb060483-51f7-43fe-8e54-b4da02c60556-0-00001.parquet
+   warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-22856c59-8fbc-42bc-bc94-c1e4b1d70890-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2ad5296a-2d75-4def-b0b4-4ca0aec533d3-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2b163bd4-d59c-4b7a-9eb8-0ce1f98aaf6d-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-ec67caa0-0a4a-4495-8623-48d6caf8ff33-0-00001.parquet
+   warehouse/silver/orders/data/20261104_173337_00078_2sz6w-67e47053-e692-42ab-b01a-93845ed38ccd.parquet
+   warehouse/silver/orders/data/20261104_173351_00083_2sz6w-bfc22cd3-b469-4510-9ea6-ea122357cc42.parquet
+   warehouse/silver/orders/data/20261104_180632_00185_2sz6w-118a9427-884a-4f08-8811-e6e9b5b35120.parquet
+   warehouse/silver/orders/data/20261104_180639_00190_2sz6w-28520310-3a11-4afe-b054-6a3697d537b6.parquet
+   warehouse/silver/orders/data/20261104_181259_00269_2sz6w-8f24f5e7-33f1-4b51-ba9c-f717ac9cd3fe.parquet
+   warehouse/silver/orders/data/20261104_181304_00274_2sz6w-46cbac2d-2d23-43c8-9c94-40f1a4b9eb0d.parquet
+   warehouse/silver/orders/data/20261104_182943_00108_eez4h-1bafc5aa-3fb4-45ea-846b-f0bfa081fe5a.parquet
+   warehouse/silver/orders/data/20261104_182955_00113_eez4h-97e793c5-a477-4e3d-b6d1-6e860d9e3cac.parquet
+   warehouse/silver/orders/data/20261109_092009_00194_ttkbn-570a7ed7-ecc5-4e64-a40e-f7ecc9e6621f.parquet
+   warehouse/silver/orders/data/20261109_092018_00199_ttkbn-3c576400-8513-4d1e-8262-1c8c528bfa8e.parquet
+   warehouse/silver/orders/metadata/00000-348e6be8-e968-4101-a1ce-f5872dbaee6d.metadata.json
+   warehouse/silver/orders/metadata/00000-49583db4-0ed4-4693-b1ac-98f331911620.metadata.json
+   warehouse/silver/orders/metadata/00000-57f85e38-5c82-4804-ba30-0c7c5e4c564f.metadata.json
+   warehouse/silver/orders/metadata/00000-87ba844c-0bc7-4577-b05a-6b047bc18408.metadata.json
+   warehouse/silver/orders/metadata/00000-abbf4732-7686-4202-8a6b-6cc709b5dbf1.metadata.json
+   warehouse/silver/orders/metadata/00000-d988a895-b9a7-4f9f-9e83-2335d664d716.metadata.json
+   warehouse/silver/orders/metadata/00001-087274d0-27a7-4ede-b3db-fcbb3202e6ec.metadata.json
+   warehouse/silver/orders/metadata/00001-09c7459e-558a-481e-a914-92a0d065bee0.metadata.json
+   warehouse/silver/orders/metadata/00001-34f63d2b-f58b-4674-bad0-a31a13c4d858.metadata.json
+   warehouse/silver/orders/metadata/00001-c1627c2f-ad06-48d5-9d25-4bdad7763a20.metadata.json
+   warehouse/silver/orders/metadata/00001-d216596f-7d5e-4e2b-9756-b9834e4aabd5.metadata.json
+   warehouse/silver/orders/metadata/00002-0d84fbcc-f987-496e-b9f4-b7799cc45b67.metadata.json
+   warehouse/silver/orders/metadata/00002-5f6b4f46-ce2f-4fbf-b393-a0380a20a943.metadata.json
+   warehouse/silver/orders/metadata/00002-71305515-159f-490d-a8b2-60314d1b7096.metadata.json
+   warehouse/silver/orders/metadata/0c74b08e-3f54-406a-919d-566b96c14c82-m0.avro
+   warehouse/silver/orders/metadata/10324c63-ba25-404f-ac91-9f669b909168-m0.avro
+   warehouse/silver/orders/metadata/22c2682c-1f9a-4b28-b840-bcbb00a73dce-m0.avro
+   warehouse/silver/orders/metadata/27744222-91b4-4c00-a0ba-087e46af4363-m0.avro
+   warehouse/silver/orders/metadata/3723b312-7118-4cab-914f-c91410568c5c-m0.avro
+   warehouse/silver/orders/metadata/504b72e4-c751-42fd-93f4-b49c164a945a-m0.avro
+   warehouse/silver/orders/metadata/64d3bf88-c29a-424f-9280-70e4f228b11d-m0.avro
+   warehouse/silver/orders/metadata/99359b12-9e44-4903-838f-436c1ac35ed5-m0.avro
+   warehouse/silver/orders/metadata/9d9d792d-51bf-46af-8c88-066067d250d5-m0.avro
+   warehouse/silver/orders/metadata/a4eaf888-042a-42b4-ba5f-88dc63dadafb-m0.avro
+   warehouse/silver/orders/metadata/bb3b8e44-d5e9-4de2-afe0-28416a3cadc2-m0.avro
+   warehouse/silver/orders/metadata/cd480c6b-bca1-46d4-ba7b-bf8595e4d71c-m0.avro
+   warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+   warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro
+   warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+   warehouse/silver/orders/metadata/e86557f3-6c2a-4c6c-97e4-acc6407620da-m0.avro
+   warehouse/silver/orders/metadata/f3fe3211-6b04-4f61-ad3b-9926bd5bb73c-m0.avro
+   warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+   warehouse/silver/orders/metadata/snap-1389325807751875982-1-27744222-91b4-4c00-a0ba-087e46af4363.avro
+   warehouse/silver/orders/metadata/snap-1779798678429895261-1-a4eaf888-042a-42b4-ba5f-88dc63dadafb.avro
+   warehouse/silver/orders/metadata/snap-2278175157894592384-1-22c2682c-1f9a-4b28-b840-bcbb00a73dce.avro
+   warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+   warehouse/silver/orders/metadata/snap-5270476602061442632-1-99359b12-9e44-4903-838f-436c1ac35ed5.avro
+   warehouse/silver/orders/metadata/snap-5470556266271378472-1-e86557f3-6c2a-4c6c-97e4-acc6407620da.avro
+   warehouse/silver/orders/metadata/snap-5508946757586184856-1-d75aa0dd-1d85-4ae5-8e37-ed111bddea29.avro
+   warehouse/silver/orders/metadata/snap-6565903723803173377-1-504b72e4-c751-42fd-93f4-b49c164a945a.avro
+   warehouse/silver/orders/metadata/snap-6725585043876083813-1-10324c63-ba25-404f-ac91-9f669b909168.avro
+   warehouse/silver/orders/metadata/snap-7189824778970656950-1-0c74b08e-3f54-406a-919d-566b96c14c82.avro
+   warehouse/silver/orders/metadata/snap-719925307057886898-1-3723b312-7118-4cab-914f-c91410568c5c.avro
+   warehouse/silver/orders/metadata/snap-7521881510251419389-1-bb3b8e44-d5e9-4de2-afe0-28416a3cadc2.avro
+   warehouse/silver/orders/metadata/snap-8348085007554398882-1-9d9d792d-51bf-46af-8c88-066067d250d5.avro
+   warehouse/silver/orders/metadata/snap-844076832312245170-1-f3fe3211-6b04-4f61-ad3b-9926bd5bb73c.avro
+   warehouse/silver/orders/metadata/snap-8598956244605314146-1-cd480c6b-bca1-46d4-ba7b-bf8595e4d71c.avro
+   warehouse/silver/orders/metadata/snap-8768276225386078794-1-64d3bf88-c29a-424f-9280-70e4f228b11d.avro
+   warehouse/silver/orders/metadata/snap-9095799915095505145-1-e011ebba-e73d-4d1a-91c5-b2c6cd9a9312.avro
+   warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+   warehouse/silver/orders/metadata/v1.metadata.json
+   warehouse/silver/orders/metadata/v2.metadata.json
+   warehouse/silver/orders/metadata/v3.metadata.json
+   warehouse/silver/orders/metadata/v4.metadata.json
+   warehouse/silver/orders/metadata/v5.metadata.json
+   warehouse/silver/orders/metadata/version-hint.text
+nouveaux objets apres register : []
+=== Tables en dev
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|   silver|   orders|      false|
++---------+---------+-----------+
+
++-------------------+---------+-----------------------+
+|snapshot_id        |operation|committed_at           |
++-------------------+---------+-----------------------+
+|964221037480772361 |overwrite|2026-11-04 15:17:07.777|
+|4316733754762097419|append   |2026-11-04 15:17:24.897|
+|9095799915095505145|append   |2026-11-04 15:18:38.034|
+|5508946757586184856|append   |2026-11-04 15:18:44.979|
++-------------------+---------+-----------------------+
+
++-----+
+|users|
++-----+
+|   53|
++-----+
+
+146 objets sous warehouse/silver/
+   warehouse/silver/
+   warehouse/silver/orders/data/00000-10-e7e54f32-08a0-42f7-8b21-7d88fbaa7b84-0-00001.parquet
+   warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet
+   warehouse/silver/orders/data/00000-21-eb060483-51f7-43fe-8e54-b4da02c60556-0-00001.parquet
+   warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-22856c59-8fbc-42bc-bc94-c1e4b1d70890-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2ad5296a-2d75-4def-b0b4-4ca0aec533d3-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-2b163bd4-d59c-4b7a-9eb8-0ce1f98aaf6d-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet
+   warehouse/silver/orders/data/00000-8-ec67caa0-0a4a-4495-8623-48d6caf8ff33-0-00001.parquet
+   warehouse/silver/orders/data/20261104_173337_00078_2sz6w-67e47053-e692-42ab-b01a-93845ed38ccd.parquet
+   warehouse/silver/orders/data/20261104_173351_00083_2sz6w-bfc22cd3-b469-4510-9ea6-ea122357cc42.parquet
+   warehouse/silver/orders/data/20261104_180632_00185_2sz6w-118a9427-884a-4f08-8811-e6e9b5b35120.parquet
+   warehouse/silver/orders/data/20261104_180639_00190_2sz6w-28520310-3a11-4afe-b054-6a3697d537b6.parquet
+   warehouse/silver/orders/data/20261104_181259_00269_2sz6w-8f24f5e7-33f1-4b51-ba9c-f717ac9cd3fe.parquet
+   warehouse/silver/orders/data/20261104_181304_00274_2sz6w-46cbac2d-2d23-43c8-9c94-40f1a4b9eb0d.parquet
+   warehouse/silver/orders/data/20261104_182943_00108_eez4h-1bafc5aa-3fb4-45ea-846b-f0bfa081fe5a.parquet
+   warehouse/silver/orders/data/20261104_182955_00113_eez4h-97e793c5-a477-4e3d-b6d1-6e860d9e3cac.parquet
+   warehouse/silver/orders/data/20261109_092009_00194_ttkbn-570a7ed7-ecc5-4e64-a40e-f7ecc9e6621f.parquet
+   warehouse/silver/orders/data/20261109_092018_00199_ttkbn-3c576400-8513-4d1e-8262-1c8c528bfa8e.parquet
+   warehouse/silver/orders/metadata/00000-348e6be8-e968-4101-a1ce-f5872dbaee6d.metadata.json
+   warehouse/silver/orders/metadata/00000-49583db4-0ed4-4693-b1ac-98f331911620.metadata.json
+   warehouse/silver/orders/metadata/00000-57f85e38-5c82-4804-ba30-0c7c5e4c564f.metadata.json
+   warehouse/silver/orders/metadata/00000-87ba844c-0bc7-4577-b05a-6b047bc18408.metadata.json
+   warehouse/silver/orders/metadata/00000-abbf4732-7686-4202-8a6b-6cc709b5dbf1.metadata.json
+   warehouse/silver/orders/metadata/00000-d988a895-b9a7-4f9f-9e83-2335d664d716.metadata.json
+   warehouse/silver/orders/metadata/00001-087274d0-27a7-4ede-b3db-fcbb3202e6ec.metadata.json
+   warehouse/silver/orders/metadata/00001-09c7459e-558a-481e-a914-92a0d065bee0.metadata.json
+   warehouse/silver/orders/metadata/00001-34f63d2b-f58b-4674-bad0-a31a13c4d858.metadata.json
+   warehouse/silver/orders/metadata/00001-c1627c2f-ad06-48d5-9d25-4bdad7763a20.metadata.json
+   warehouse/silver/orders/metadata/00001-d216596f-7d5e-4e2b-9756-b9834e4aabd5.metadata.json
+   warehouse/silver/orders/metadata/00002-0d84fbcc-f987-496e-b9f4-b7799cc45b67.metadata.json
+   warehouse/silver/orders/metadata/00002-5f6b4f46-ce2f-4fbf-b393-a0380a20a943.metadata.json
+   warehouse/silver/orders/metadata/00002-71305515-159f-490d-a8b2-60314d1b7096.metadata.json
+   warehouse/silver/orders/metadata/0c74b08e-3f54-406a-919d-566b96c14c82-m0.avro
+   warehouse/silver/orders/metadata/10324c63-ba25-404f-ac91-9f669b909168-m0.avro
+   warehouse/silver/orders/metadata/22c2682c-1f9a-4b28-b840-bcbb00a73dce-m0.avro
+   warehouse/silver/orders/metadata/27744222-91b4-4c00-a0ba-087e46af4363-m0.avro
+   warehouse/silver/orders/metadata/3723b312-7118-4cab-914f-c91410568c5c-m0.avro
+   warehouse/silver/orders/metadata/504b72e4-c751-42fd-93f4-b49c164a945a-m0.avro
+   warehouse/silver/orders/metadata/64d3bf88-c29a-424f-9280-70e4f228b11d-m0.avro
+   warehouse/silver/orders/metadata/99359b12-9e44-4903-838f-436c1ac35ed5-m0.avro
+   warehouse/silver/orders/metadata/9d9d792d-51bf-46af-8c88-066067d250d5-m0.avro
+   warehouse/silver/orders/metadata/a4eaf888-042a-42b4-ba5f-88dc63dadafb-m0.avro
+   warehouse/silver/orders/metadata/bb3b8e44-d5e9-4de2-afe0-28416a3cadc2-m0.avro
+   warehouse/silver/orders/metadata/cd480c6b-bca1-46d4-ba7b-bf8595e4d71c-m0.avro
+   warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+   warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro
+   warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+   warehouse/silver/orders/metadata/e86557f3-6c2a-4c6c-97e4-acc6407620da-m0.avro
+   warehouse/silver/orders/metadata/f3fe3211-6b04-4f61-ad3b-9926bd5bb73c-m0.avro
+   warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+   warehouse/silver/orders/metadata/snap-1389325807751875982-1-27744222-91b4-4c00-a0ba-087e46af4363.avro
+   warehouse/silver/orders/metadata/snap-1779798678429895261-1-a4eaf888-042a-42b4-ba5f-88dc63dadafb.avro
+   warehouse/silver/orders/metadata/snap-2278175157894592384-1-22c2682c-1f9a-4b28-b840-bcbb00a73dce.avro
+   warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+   warehouse/silver/orders/metadata/snap-5270476602061442632-1-99359b12-9e44-4903-838f-436c1ac35ed5.avro
+   warehouse/silver/orders/metadata/snap-5470556266271378472-1-e86557f3-6c2a-4c6c-97e4-acc6407620da.avro
+   warehouse/silver/orders/metadata/snap-5508946757586184856-1-d75aa0dd-1d85-4ae5-8e37-ed111bddea29.avro
+   warehouse/silver/orders/metadata/snap-6565903723803173377-1-504b72e4-c751-42fd-93f4-b49c164a945a.avro
+   warehouse/silver/orders/metadata/snap-6725585043876083813-1-10324c63-ba25-404f-ac91-9f669b909168.avro
+   warehouse/silver/orders/metadata/snap-7189824778970656950-1-0c74b08e-3f54-406a-919d-566b96c14c82.avro
+   warehouse/silver/orders/metadata/snap-719925307057886898-1-3723b312-7118-4cab-914f-c91410568c5c.avro
+   warehouse/silver/orders/metadata/snap-7521881510251419389-1-bb3b8e44-d5e9-4de2-afe0-28416a3cadc2.avro
+   warehouse/silver/orders/metadata/snap-8348085007554398882-1-9d9d792d-51bf-46af-8c88-066067d250d5.avro
+   warehouse/silver/orders/metadata/snap-844076832312245170-1-f3fe3211-6b04-4f61-ad3b-9926bd5bb73c.avro
+   warehouse/silver/orders/metadata/snap-8598956244605314146-1-cd480c6b-bca1-46d4-ba7b-bf8595e4d71c.avro
+   warehouse/silver/orders/metadata/snap-8768276225386078794-1-64d3bf88-c29a-424f-9280-70e4f228b11d.avro
+   warehouse/silver/orders/metadata/snap-9095799915095505145-1-e011ebba-e73d-4d1a-91c5-b2c6cd9a9312.avro
+   warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+   warehouse/silver/orders/metadata/v1.metadata.json
+   warehouse/silver/orders/metadata/v2.metadata.json
+   warehouse/silver/orders/metadata/v3.metadata.json
+   warehouse/silver/orders/metadata/v4.metadata.json
+   warehouse/silver/orders/metadata/v5.metadata.json
+   warehouse/silver/orders/metadata/version-hint.text
+   warehouse/silver/users/data/00000-0-69b7d9db-e4c5-437e-8303-a5aea765cbd1-0-00001.parquet
+   warehouse/silver/users/data/00000-0-8d184d69-adde-4ba0-b64f-9276ad86a94b-0-00001.parquet
+   warehouse/silver/users/data/00000-0-a4351b0a-45ac-45bd-9aab-28ceb4eebe71-0-00001.parquet
+   warehouse/silver/users/data/00000-0-ad7499ad-d71c-4973-b2f8-aafbdede5e8c-0-00001.parquet
+   warehouse/silver/users/data/00000-30-09b32dcc-36e7-4a84-8826-e51a89edbe64-0-00001.parquet
+   warehouse/silver/users/data/00000-39-23544928-16f0-4adc-8dfa-42ca663e55c0-0-00001.parquet
+   warehouse/silver/users/data/00000-5-2066f3f0-b358-4618-a90d-5ad0b18229b2-0-00001.parquet
+   warehouse/silver/users/data/00000-5-2c60fec3-8e86-4e57-a05b-d699d75c3d2f-0-00001.parquet
+   warehouse/silver/users/data/00000-5-3176fa2e-4c85-436d-bff8-847389602fd1-0-00001.parquet
+   warehouse/silver/users/data/00000-5-7650d890-3fef-467a-8ccc-d2d2c43f2846-0-00001.parquet
+   warehouse/silver/users/data/00000-6-21c243ed-ba2e-46d6-aed5-20ad0f111c73-0-00001.parquet
+   warehouse/silver/users/data/00000-6-aee1f978-72ff-4171-a27b-cd579ae050a2-0-00001.parquet
+   warehouse/silver/users/data/00000-6-cf6550ee-96bf-420b-9eae-abbc004a5ba6-0-00001.parquet
+   warehouse/silver/users/data/00000-6-f90ed4b8-67f1-46b8-8232-15b8538c9511-0-00001.parquet
+   warehouse/silver/users/data/00000-73-53817c68-c93f-4f92-b013-0d7e7f65975c-0-00001.parquet
+   warehouse/silver/users/data/00000-8-962f5942-a4e8-4d34-b324-85ab1f4da20b-0-00001.parquet
+   warehouse/silver/users/metadata/00000-00cf288a-755a-4cd4-8705-252433605ee1.metadata.json
+   warehouse/silver/users/metadata/00000-027c9b9f-602c-407f-a4be-8672cd824c67.metadata.json
+   warehouse/silver/users/metadata/00000-32d9e85e-a79b-49ec-ade0-18b25f933de0.metadata.json
+   warehouse/silver/users/metadata/00000-4b165d65-09d7-4b6f-9c2c-06de93e421d1.metadata.json
+   warehouse/silver/users/metadata/00000-889c3ab5-cde2-442e-a7ab-77a0f51fe0e4.metadata.json
+   warehouse/silver/users/metadata/00000-a45e6b6e-2dcf-482d-a285-7962f8173338.metadata.json
+   warehouse/silver/users/metadata/00000-c55243c6-97c3-48e8-8069-f91311282d81.metadata.json
+   warehouse/silver/users/metadata/00000-cb6ff392-4572-4ceb-8729-19756282e614.metadata.json
+   warehouse/silver/users/metadata/00000-dc0ee9a6-d65f-4d97-825f-f4fb781d37ed.metadata.json
+   warehouse/silver/users/metadata/00000-ed0d82bb-c17b-4fe0-ab64-73f5b0f107ff.metadata.json
+   warehouse/silver/users/metadata/00000-f769e82b-3191-42f0-9e7a-16d62079e113.metadata.json
+   warehouse/silver/users/metadata/00000-fb60e5a1-ca3d-4dd6-962b-fdeee8b946d8.metadata.json
+   warehouse/silver/users/metadata/00001-021b0c4f-8700-4393-a91f-121a822ddf50.metadata.json
+   warehouse/silver/users/metadata/00001-22e647f1-8e03-4fbe-8883-cafc71906c85.metadata.json
+   warehouse/silver/users/metadata/00001-4bae29fb-e597-44cc-a451-7ad8d56e1624.metadata.json
+   warehouse/silver/users/metadata/00001-e1c298ca-9096-40c1-9aa8-915454f88396.metadata.json
+   warehouse/silver/users/metadata/00002-1097f68a-f217-44ed-8672-5c8df2c02748.metadata.json
+   warehouse/silver/users/metadata/063e71d9-64e9-4f8a-a98a-d3df0f85452d-m0.avro
+   warehouse/silver/users/metadata/09e12833-62ef-4220-8665-f613433e1d25-m0.avro
+   warehouse/silver/users/metadata/2c8ce713-dc99-4029-b715-eeeb25cc9fc4-m0.avro
+   warehouse/silver/users/metadata/42a44240-6412-4f74-adfa-29a000624967-m0.avro
+   warehouse/silver/users/metadata/76c8d664-7e19-4267-a63a-73a4bb66a5c5-m0.avro
+   warehouse/silver/users/metadata/7cae5614-b460-4e78-b998-d03e38cff9ef-m0.avro
+   warehouse/silver/users/metadata/9a462ec8-5965-44b1-b653-329f55640291-m0.avro
+   warehouse/silver/users/metadata/9d0b67dc-ebfc-4988-9a90-a0003c07c0d5-m0.avro
+   warehouse/silver/users/metadata/a1d98ba4-bb75-4633-b774-d5f290c437cc-m0.avro
+   warehouse/silver/users/metadata/a6c0fc83-c6cb-4aad-83ca-3d0327adb1ad-m0.avro
+   warehouse/silver/users/metadata/a838e2a4-19d2-4fd8-8319-8502bd182875-m0.avro
+   warehouse/silver/users/metadata/bcebb3da-cb46-4686-b7bb-4d574d083fdb-m0.avro
+   warehouse/silver/users/metadata/eda1a980-90b3-40d7-ba6c-0f8f2a4ea5a8-m0.avro
+   warehouse/silver/users/metadata/f0c6742f-6cb0-45ba-9117-9e78f9a891c7-m0.avro
+   warehouse/silver/users/metadata/f7994ec5-3c36-486b-8f72-8dcf20520074-m0.avro
+   warehouse/silver/users/metadata/fda16135-a053-469d-ba09-6dc14eee6062-m0.avro
+   warehouse/silver/users/metadata/snap-1151481961124469263-1-a1d98ba4-bb75-4633-b774-d5f290c437cc.avro
+   warehouse/silver/users/metadata/snap-1187920851632220561-1-42a44240-6412-4f74-adfa-29a000624967.avro
+   warehouse/silver/users/metadata/snap-2257958622582635502-1-9a462ec8-5965-44b1-b653-329f55640291.avro
+   warehouse/silver/users/metadata/snap-2309729740557127017-1-bcebb3da-cb46-4686-b7bb-4d574d083fdb.avro
+   warehouse/silver/users/metadata/snap-2451634219645630565-1-eda1a980-90b3-40d7-ba6c-0f8f2a4ea5a8.avro
+   warehouse/silver/users/metadata/snap-2696183990049179700-1-fda16135-a053-469d-ba09-6dc14eee6062.avro
+   warehouse/silver/users/metadata/snap-2765402408788401827-1-76c8d664-7e19-4267-a63a-73a4bb66a5c5.avro
+   warehouse/silver/users/metadata/snap-320538005157052460-1-9d0b67dc-ebfc-4988-9a90-a0003c07c0d5.avro
+   warehouse/silver/users/metadata/snap-3427946689118351383-1-2c8ce713-dc99-4029-b715-eeeb25cc9fc4.avro
+   warehouse/silver/users/metadata/snap-4355136821412529887-1-f7994ec5-3c36-486b-8f72-8dcf20520074.avro
+   warehouse/silver/users/metadata/snap-4735834323128096468-1-f0c6742f-6cb0-45ba-9117-9e78f9a891c7.avro
+   warehouse/silver/users/metadata/snap-4905531104241152578-1-a6c0fc83-c6cb-4aad-83ca-3d0327adb1ad.avro
+   warehouse/silver/users/metadata/snap-655989786843848798-1-09e12833-62ef-4220-8665-f613433e1d25.avro
+   warehouse/silver/users/metadata/snap-6769276086529345536-1-7cae5614-b460-4e78-b998-d03e38cff9ef.avro
+   warehouse/silver/users/metadata/snap-8506999006685882771-1-063e71d9-64e9-4f8a-a98a-d3df0f85452d.avro
+   warehouse/silver/users/metadata/snap-8953375796526840078-1-a838e2a4-19d2-4fd8-8319-8502bd182875.avro
+   warehouse/silver/users/metadata/v1.metadata.json
+   warehouse/silver/users/metadata/v2.metadata.json
+   warehouse/silver/users/metadata/v3.metadata.json
+   warehouse/silver/users/metadata/v4.metadata.json
+   warehouse/silver/users/metadata/version-hint.text
++-------------------------------+------------------------------+
+|key                            |value                         |
++-------------------------------+------------------------------+
+|created-at                     |2026-11-09T10:48:57.667723140Z|
+|current-snapshot-id            |8953375796526840078           |
+|format                         |iceberg/parquet               |
+|format-version                 |2                             |
+|write.parquet.compression-codec|zstd                          |
++-------------------------------+------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------+
+|file                                                                                                             |
++-----------------------------------------------------------------------------------------------------------------+
+|s3://user-b-defelice-ece/warehouse/silver/users/metadata/00000-ed0d82bb-c17b-4fe0-ab64-73f5b0f107ff.metadata.json|
++-----------------------------------------------------------------------------------------------------------------+
+
+=== Schema en dev
+ALTER ADD COLUMN country : [FIELD_ALREADY_EXISTS] Cannot add column, because `country` already exists in "STRUCT<user_id: STRING, username: STRING, name: STRING, sex: STRING, email: STRIN
+-> la colonne existe deja, j'ajoute une colonne region a la place
++---------+---------+-------+
+| col_name|data_type|comment|
++---------+---------+-------+
+|  user_id|   string|   NULL|
+| username|   string|   NULL|
+|     name|   string|   NULL|
+|      sex|   string|   NULL|
+|    email|   string|   NULL|
+|birthdate|     date|   NULL|
+|   street|   string|   NULL|
+|     city|   string|   NULL|
+|    state|   string|   NULL|
+| zip_code|   string|   NULL|
+|  country|   string|   NULL|
+|   region|   string|   NULL|
++---------+---------+-------+
+
++-----------------------------------------------------------------------------------------------------------------+
+|file                                                                                                             |
++-----------------------------------------------------------------------------------------------------------------+
+|s3://user-b-defelice-ece/warehouse/silver/users/metadata/00000-ed0d82bb-c17b-4fe0-ab64-73f5b0f107ff.metadata.json|
+|s3://user-b-defelice-ece/warehouse/silver/users/metadata/00001-3947da2c-5a68-458c-a697-7554eb7aab62.metadata.json|
++-----------------------------------------------------------------------------------------------------------------+
+
++---------------------------------------------------------------------------+
+|file                                                                       |
++---------------------------------------------------------------------------+
+|s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/v1.metadata.json|
+|s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/v2.metadata.json|
+|s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/v3.metadata.json|
+|s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/v4.metadata.json|
+|s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/v5.metadata.json|
++---------------------------------------------------------------------------+
+
+################ analyst
+Polaris principal: analyst
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|   silver|   orders|      false|
+|   silver|    users|      false|
++---------+---------+-----------+
+
++---------+--------+
+|  product|count(1)|
++---------+--------+
+|    donut|     462|
+|   cookie|     470|
+|croissant|     491|
+|    bread|     459|
+|  brioche|     468|
+|    drink|     484|
++---------+--------+
+
+> INSERT INTO polaris.silver.orders SELECT * FROM polaris.silver.orders LIMIT 1
+10:49:34.092 [Thread-4] ERROR org.apache.spark.sql.execution.datasources.v2.AppendDataExec - Data source write support IcebergBatchWrite(table=polaris.silver.orders, format=PARQUET) is aborting.
+10:49:34.192 [Thread-4] ERROR org.apache.spark.sql.execution.datasources.v2.AppendDataExec - Data source write support IcebergBatchWrite(table=polaris.silver.orders, format=PARQUET) aborted.
+ERREUR : : org.apache.iceberg.exceptions.ForbiddenException: Forbidden: Principal 'analyst' with activated PrincipalRoles '[data_analyst]' and activated grants via '[data_analyst, catalog_reader]' is not authorized for op ADD_TABLE_SNAPSHOT
+> ALTER TABLE polaris.silver.users ADD COLUMN phone STRING
+ERREUR : : org.apache.iceberg.exceptions.ForbiddenException: Forbidden: Principal 'analyst' with activated PrincipalRoles '[data_analyst]' and activated grants via '[data_analyst, catalog_reader]' is not authorized for op ADD_TABLE_SCHEMA
+################ verif
+Polaris principal: dev
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+=== Snapshots de silver.orders apres les essais de l'analyst
++-------------------+---------+-----------------------+
+|snapshot_id        |operation|committed_at           |
++-------------------+---------+-----------------------+
+|964221037480772361 |overwrite|2026-11-04 15:17:07.777|
+|4316733754762097419|append   |2026-11-04 15:17:24.897|
+|9095799915095505145|append   |2026-11-04 15:18:38.034|
+|5508946757586184856|append   |2026-11-04 15:18:44.979|
++-------------------+---------+-----------------------+
+
+=== Exercice 1 : suppression de country
++-------------------+---------+-----------------------+
+|snapshot_id        |operation|committed_at           |
++-------------------+---------+-----------------------+
+|8953375796526840078|overwrite|2026-11-09 10:49:01.033|
++-------------------+---------+-----------------------+
+
++---------+---------+-------+
+| col_name|data_type|comment|
++---------+---------+-------+
+|  user_id|   string|   NULL|
+| username|   string|   NULL|
+|     name|   string|   NULL|
+|      sex|   string|   NULL|
+|    email|   string|   NULL|
+|birthdate|     date|   NULL|
+|   street|   string|   NULL|
+|     city|   string|   NULL|
+|    state|   string|   NULL|
+| zip_code|   string|   NULL|
+|   region|   string|   NULL|
++---------+---------+-------+
+
++-------------------+---------+-----------------------+
+|snapshot_id        |operation|committed_at           |
++-------------------+---------+-----------------------+
+|8953375796526840078|overwrite|2026-11-09 10:49:01.033|
++-------------------+---------+-----------------------+
+
++-----------------------+-----------------------------------------------------------------------------------------------------------------+-------------------+
+|timestamp              |file                                                                                                             |latest_snapshot_id |
++-----------------------+-----------------------------------------------------------------------------------------------------------------+-------------------+
+|2026-11-09 10:49:01.241|s3://user-b-defelice-ece/warehouse/silver/users/metadata/00000-ed0d82bb-c17b-4fe0-ab64-73f5b0f107ff.metadata.json|8953375796526840078|
+|2026-11-09 10:49:05.002|s3://user-b-defelice-ece/warehouse/silver/users/metadata/00001-3947da2c-5a68-458c-a697-7554eb7aab62.metadata.json|8953375796526840078|
+|2026-11-09 10:49:58.08 |s3://user-b-defelice-ece/warehouse/silver/users/metadata/00002-fcf79185-0d95-4881-a37d-a9c10bb571f6.metadata.json|8953375796526840078|
++-----------------------+-----------------------------------------------------------------------------------------------------------------+-------------------+
+
+72 objets sous warehouse/silver/users/
+   warehouse/silver/users/data/00000-0-69b7d9db-e4c5-437e-8303-a5aea765cbd1-0-00001.parquet
+   warehouse/silver/users/data/00000-0-8d184d69-adde-4ba0-b64f-9276ad86a94b-0-00001.parquet
+   warehouse/silver/users/data/00000-0-a4351b0a-45ac-45bd-9aab-28ceb4eebe71-0-00001.parquet
+   warehouse/silver/users/data/00000-0-ad7499ad-d71c-4973-b2f8-aafbdede5e8c-0-00001.parquet
+   warehouse/silver/users/data/00000-30-09b32dcc-36e7-4a84-8826-e51a89edbe64-0-00001.parquet
+   warehouse/silver/users/data/00000-39-23544928-16f0-4adc-8dfa-42ca663e55c0-0-00001.parquet
+   warehouse/silver/users/data/00000-5-2066f3f0-b358-4618-a90d-5ad0b18229b2-0-00001.parquet
+   warehouse/silver/users/data/00000-5-2c60fec3-8e86-4e57-a05b-d699d75c3d2f-0-00001.parquet
+   warehouse/silver/users/data/00000-5-3176fa2e-4c85-436d-bff8-847389602fd1-0-00001.parquet
+   warehouse/silver/users/data/00000-5-7650d890-3fef-467a-8ccc-d2d2c43f2846-0-00001.parquet
+   warehouse/silver/users/data/00000-6-21c243ed-ba2e-46d6-aed5-20ad0f111c73-0-00001.parquet
+   warehouse/silver/users/data/00000-6-aee1f978-72ff-4171-a27b-cd579ae050a2-0-00001.parquet
+   warehouse/silver/users/data/00000-6-cf6550ee-96bf-420b-9eae-abbc004a5ba6-0-00001.parquet
+   warehouse/silver/users/data/00000-6-f90ed4b8-67f1-46b8-8232-15b8538c9511-0-00001.parquet
+   warehouse/silver/users/data/00000-73-53817c68-c93f-4f92-b013-0d7e7f65975c-0-00001.parquet
+   warehouse/silver/users/data/00000-8-962f5942-a4e8-4d34-b324-85ab1f4da20b-0-00001.parquet
+   warehouse/silver/users/metadata/00000-00cf288a-755a-4cd4-8705-252433605ee1.metadata.json
+   warehouse/silver/users/metadata/00000-027c9b9f-602c-407f-a4be-8672cd824c67.metadata.json
+   warehouse/silver/users/metadata/00000-32d9e85e-a79b-49ec-ade0-18b25f933de0.metadata.json
+   warehouse/silver/users/metadata/00000-4b165d65-09d7-4b6f-9c2c-06de93e421d1.metadata.json
+   warehouse/silver/users/metadata/00000-889c3ab5-cde2-442e-a7ab-77a0f51fe0e4.metadata.json
+   warehouse/silver/users/metadata/00000-a45e6b6e-2dcf-482d-a285-7962f8173338.metadata.json
+   warehouse/silver/users/metadata/00000-c55243c6-97c3-48e8-8069-f91311282d81.metadata.json
+   warehouse/silver/users/metadata/00000-cb6ff392-4572-4ceb-8729-19756282e614.metadata.json
+   warehouse/silver/users/metadata/00000-dc0ee9a6-d65f-4d97-825f-f4fb781d37ed.metadata.json
+   warehouse/silver/users/metadata/00000-ed0d82bb-c17b-4fe0-ab64-73f5b0f107ff.metadata.json
+   warehouse/silver/users/metadata/00000-f769e82b-3191-42f0-9e7a-16d62079e113.metadata.json
+   warehouse/silver/users/metadata/00000-fb60e5a1-ca3d-4dd6-962b-fdeee8b946d8.metadata.json
+   warehouse/silver/users/metadata/00001-021b0c4f-8700-4393-a91f-121a822ddf50.metadata.json
+   warehouse/silver/users/metadata/00001-22e647f1-8e03-4fbe-8883-cafc71906c85.metadata.json
+   warehouse/silver/users/metadata/00001-3947da2c-5a68-458c-a697-7554eb7aab62.metadata.json
+   warehouse/silver/users/metadata/00001-4bae29fb-e597-44cc-a451-7ad8d56e1624.metadata.json
+   warehouse/silver/users/metadata/00001-e1c298ca-9096-40c1-9aa8-915454f88396.metadata.json
+   warehouse/silver/users/metadata/00002-1097f68a-f217-44ed-8672-5c8df2c02748.metadata.json
+   warehouse/silver/users/metadata/00002-fcf79185-0d95-4881-a37d-a9c10bb571f6.metadata.json
+   warehouse/silver/users/metadata/063e71d9-64e9-4f8a-a98a-d3df0f85452d-m0.avro
+   warehouse/silver/users/metadata/09e12833-62ef-4220-8665-f613433e1d25-m0.avro
+   warehouse/silver/users/metadata/2c8ce713-dc99-4029-b715-eeeb25cc9fc4-m0.avro
+   warehouse/silver/users/metadata/42a44240-6412-4f74-adfa-29a000624967-m0.avro
+   warehouse/silver/users/metadata/76c8d664-7e19-4267-a63a-73a4bb66a5c5-m0.avro
+   warehouse/silver/users/metadata/7cae5614-b460-4e78-b998-d03e38cff9ef-m0.avro
+   warehouse/silver/users/metadata/9a462ec8-5965-44b1-b653-329f55640291-m0.avro
+   warehouse/silver/users/metadata/9d0b67dc-ebfc-4988-9a90-a0003c07c0d5-m0.avro
+   warehouse/silver/users/metadata/a1d98ba4-bb75-4633-b774-d5f290c437cc-m0.avro
+   warehouse/silver/users/metadata/a6c0fc83-c6cb-4aad-83ca-3d0327adb1ad-m0.avro
+   warehouse/silver/users/metadata/a838e2a4-19d2-4fd8-8319-8502bd182875-m0.avro
+   warehouse/silver/users/metadata/bcebb3da-cb46-4686-b7bb-4d574d083fdb-m0.avro
+   warehouse/silver/users/metadata/eda1a980-90b3-40d7-ba6c-0f8f2a4ea5a8-m0.avro
+   warehouse/silver/users/metadata/f0c6742f-6cb0-45ba-9117-9e78f9a891c7-m0.avro
+   warehouse/silver/users/metadata/f7994ec5-3c36-486b-8f72-8dcf20520074-m0.avro
+   warehouse/silver/users/metadata/fda16135-a053-469d-ba09-6dc14eee6062-m0.avro
+   warehouse/silver/users/metadata/snap-1151481961124469263-1-a1d98ba4-bb75-4633-b774-d5f290c437cc.avro
+   warehouse/silver/users/metadata/snap-1187920851632220561-1-42a44240-6412-4f74-adfa-29a000624967.avro
+   warehouse/silver/users/metadata/snap-2257958622582635502-1-9a462ec8-5965-44b1-b653-329f55640291.avro
+   warehouse/silver/users/metadata/snap-2309729740557127017-1-bcebb3da-cb46-4686-b7bb-4d574d083fdb.avro
+   warehouse/silver/users/metadata/snap-2451634219645630565-1-eda1a980-90b3-40d7-ba6c-0f8f2a4ea5a8.avro
+   warehouse/silver/users/metadata/snap-2696183990049179700-1-fda16135-a053-469d-ba09-6dc14eee6062.avro
+   warehouse/silver/users/metadata/snap-2765402408788401827-1-76c8d664-7e19-4267-a63a-73a4bb66a5c5.avro
+   warehouse/silver/users/metadata/snap-320538005157052460-1-9d0b67dc-ebfc-4988-9a90-a0003c07c0d5.avro
+   warehouse/silver/users/metadata/snap-3427946689118351383-1-2c8ce713-dc99-4029-b715-eeeb25cc9fc4.avro
+   warehouse/silver/users/metadata/snap-4355136821412529887-1-f7994ec5-3c36-486b-8f72-8dcf20520074.avro
+   warehouse/silver/users/metadata/snap-4735834323128096468-1-f0c6742f-6cb0-45ba-9117-9e78f9a891c7.avro
+   warehouse/silver/users/metadata/snap-4905531104241152578-1-a6c0fc83-c6cb-4aad-83ca-3d0327adb1ad.avro
+   warehouse/silver/users/metadata/snap-655989786843848798-1-09e12833-62ef-4220-8665-f613433e1d25.avro
+   warehouse/silver/users/metadata/snap-6769276086529345536-1-7cae5614-b460-4e78-b998-d03e38cff9ef.avro
+   warehouse/silver/users/metadata/snap-8506999006685882771-1-063e71d9-64e9-4f8a-a98a-d3df0f85452d.avro
+   warehouse/silver/users/metadata/snap-8953375796526840078-1-a838e2a4-19d2-4fd8-8319-8502bd182875.avro
+   warehouse/silver/users/metadata/v1.metadata.json
+   warehouse/silver/users/metadata/v2.metadata.json
+   warehouse/silver/users/metadata/v3.metadata.json
+   warehouse/silver/users/metadata/v4.metadata.json
+   warehouse/silver/users/metadata/version-hint.text
+################ exo2
+=== Creation du role silver_reader, du role principal et du principal reader_silver
+409
+grant NAMESPACE_LIST sur silver : 201
+grant TABLE_LIST sur silver : 201
+grant NAMESPACE_READ_PROPERTIES sur silver : 201
+grant TABLE_READ_PROPERTIES sur silver : 201
+grant TABLE_READ_DATA sur silver : 201
+409
+201
+201
+grants de silver_reader : {"grants": [{"namespace": ["silver"], "privilege": "NAMESPACE_LIST", "type": "namespace"}, {"namespace": ["silver"], "privilege": "TABLE_LIST", "type": "namespace"}, {"namespace": ["silver"], "privilege": "NAMESPACE_READ_PROPERTIES", "type": "namespace"}, {"namespace": ["silver"], "privilege": "TABLE_READ_PROPERTIES", "type": "namespace"}, {"namespace": ["silver"], "privilege": "TABLE_READ_DATA", "type": "namespace"}]}
+=== Namespace gold en dev
+Polaris principal: dev
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
++---------+------+--------+
+|  product|orders|quantity|
++---------+------+--------+
+|    donut|   462|    1390|
+|   cookie|   470|    1375|
+|croissant|   491|    1523|
+|    bread|   459|    1425|
+|  brioche|   468|    1424|
+|    drink|   484|    1493|
++---------+------+--------+
+
+=== Tests avec reader_silver
+Polaris principal: reader_silver
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+> SHOW TABLES IN polaris.silver
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|silver   |orders   |false      |
+|silver   |users    |false      |
++---------+---------+-----------+
+
+OK
+> SELECT count(*) FROM polaris.silver.orders
++--------+
+|count(1)|
++--------+
+|2834    |
++--------+
+
+OK
+> SHOW TABLES IN polaris.gold
+ERREUR : : org.apache.iceberg.exceptions.ForbiddenException: Forbidden: Principal 'reader_silver' with activated PrincipalRoles '[silver_analyst]' and activated grants via '[silver_analyst, silver_reader]' is not authorized for op LIST_TABLES
+> SELECT * FROM polaris.gold.orders_by_product
+ERREUR : : org.apache.iceberg.exceptions.ForbiddenException: Forbidden: Principal 'reader_silver' with activated PrincipalRoles '[silver_analyst]' and activated grants via '[silver_analyst, silver_reader]' is not authorized for op LOAD_TABLE
+> INSERT INTO polaris.silver.orders SELECT * FROM polaris.silver.orders LIMIT 1
+10:50:35.777 [Thread-4] ERROR org.apache.spark.sql.execution.datasources.v2.AppendDataExec - Data source write support IcebergBatchWrite(table=polaris.silver.orders, format=PARQUET) is aborting.
+10:50:35.841 [Thread-4] ERROR org.apache.spark.sql.execution.datasources.v2.AppendDataExec - Data source write support IcebergBatchWrite(table=polaris.silver.orders, format=PARQUET) aborted.
+ERREUR : : org.apache.iceberg.exceptions.ForbiddenException: Forbidden: Principal 'reader_silver' with activated PrincipalRoles '[silver_analyst]' and activated grants via '[silver_analyst, silver_reader]' is not authorized for op ADD_TABLE_SNAPSHOT
+################ nettoyage
+Polaris principal: dev
+fs.s3.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|   silver|   orders|      false|
++---------+---------+-----------+
+
++---------+
+|namespace|
++---------+
+|   silver|
++---------+
+
+################ fin

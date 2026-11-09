@@ -6,6 +6,7 @@
 #   verif     : snapshots en dev apres les essais de l'analyst + exercice 1
 #   exo2      : exercice 2 (role silver_reader, namespace gold)
 #   nettoyage : DROP de polaris.silver.users et polaris.gold
+#   reset     : (hors lab) supprime de Polaris les tables creees par le lab Trino pour rejouer ce lab
 import json
 import os
 import subprocess
@@ -211,6 +212,19 @@ elif ETAPE == "exo2":
     essai(spark, "SHOW TABLES IN polaris.gold")
     essai(spark, "SELECT * FROM polaris.gold.orders_by_product")
     essai(spark, "INSERT INTO polaris.silver.orders SELECT * FROM polaris.silver.orders LIMIT 1")
+    spark.stop()
+
+elif ETAPE == "reset":
+    spark = session("dev")
+    for ns in ["gold", "silver"]:
+        try:
+            for r in spark.sql(f"SHOW TABLES IN polaris.{ns}").collect():
+                print("DROP TABLE polaris." + ns + "." + r.tableName)
+                spark.sql(f"DROP TABLE polaris.{ns}.{r.tableName}")
+        except Exception as e:
+            print("namespace", ns, ":", str(e).split("\n")[0][:120])
+    spark.sql("DROP NAMESPACE IF EXISTS polaris.gold")
+    spark.sql("SHOW NAMESPACES IN polaris").show()
     spark.stop()
 
 elif ETAPE == "nettoyage":

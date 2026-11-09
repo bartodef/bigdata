@@ -1,4 +1,4 @@
-# Lab 10 Trino : partie Spark (preparation des tables silver dans Polaris + exercice 5)
+# Lab 10 Trino : partie Spark (tables silver dans Polaris + exercice 5)
 # Usage : python3 -u lab-10/spark_polaris.py prep|exo5
 import os
 import sys
@@ -47,59 +47,12 @@ def tables():
 
 
 if ETAPE == "prep":
-    # Bronze du bucket (users.csv et orders.csv), memes transformations que lab-07/lab_silver.py
-    from pyspark.sql import functions as F
-    from pyspark.sql.window import Window
-
-    users_bronze = spark.read.csv(f"s3a://{BUCKET}/bronze/users.csv", header=True, inferSchema=True,
-                                  samplingRatio=0.01, multiLine=True)
-    orders_bronze = spark.read.csv(f"s3a://{BUCKET}/bronze/orders.csv", header=True, inferSchema=True,
-                                   samplingRatio=0.01, multiLine=True)
-    print("bronze : users", users_bronze.count(), "orders", orders_bronze.count())
-
-    # memes transformations que le lab 7 (lab-07/lab_silver.py)
-    users_typed = (
-        users_bronze.select(
-            F.col("uuid").cast("string").alias("user_id"),
-            F.trim("username").alias("username"),
-            F.trim("name").alias("name"),
-            F.upper(F.trim("sex")).alias("sex"),
-            F.lower(F.trim("mail")).alias("email"),
-            F.col("birthdate").cast("date").alias("birthdate"),
-            F.split(F.col("address"), "\n").alias("address_lines"),
-        )
-        .withColumn("street", F.element_at("address_lines", 1))
-        .withColumn("address_line_2", F.element_at("address_lines", 2))
-        .drop("address_lines")
-    )
-    stg_users = users_typed.select(
-        "user_id", "username", "name", "sex", "email", "birthdate", "street",
-        F.regexp_extract("address_line_2", "^(.+), [A-Z]{2} [0-9]{5}$", 1).alias("city"),
-        F.regexp_extract("address_line_2", "([A-Z]{2}) ([0-9]{5})$", 1).alias("state"),
-        F.regexp_extract("address_line_2", "([A-Z]{2}) ([0-9]{5})$", 2).alias("zip_code"),
-    )
-    stg_users = stg_users.withColumn("city", F.when(F.col("city") == "", None).otherwise(F.col("city")))
-    orders_typed = orders_bronze.select(
-        F.col("uuid").cast("string").alias("order_id"),
-        F.col("user_uuid").cast("string").alias("user_id"),
-        F.col("date").cast("timestamp").alias("ordered_at"),
-        F.col("quantity").cast("int").alias("quantity"),
-        F.lower(F.trim("product")).alias("product"),
-    )
-    dedup_window = Window.partitionBy("order_id").orderBy(F.col("ordered_at").desc())
-    stg_orders = (
-        orders_typed.withColumn("row_number", F.row_number().over(dedup_window))
-        .filter(F.col("row_number") == 1)
-        .drop("row_number")
-    )
-
-    # Tables silver de Polaris recreees (DROP sans PURGE : les fichiers des labs 7 et 8 restent)
+    # silver.orders est la table enregistree dans Polaris par le lab Polaris : on n'y touche pas.
+    # silver.users a ete supprimee au nettoyage du lab Polaris : on la recree comme dans ce lab.
     spark.sql("CREATE NAMESPACE IF NOT EXISTS polaris.silver")
-    spark.sql("DROP TABLE IF EXISTS polaris.silver.orders")
-    spark.sql("DROP TABLE IF EXISTS polaris.silver.users")
-    stg_users.writeTo("polaris.silver.users").create()
-    stg_orders.writeTo("polaris.silver.orders").create()
-    # gold d'une execution precedente : DROP sans purge (Polaris refuse la purge par defaut)
+    if "users" not in tables():
+        spark.table("lab.silver.users").writeTo("polaris.silver.users").createOrReplace()
+    # tables gold d'une execution precedente : DROP sans purge (Polaris refuse la purge par defaut)
     spark.sql("CREATE NAMESPACE IF NOT EXISTS polaris.gold")
     for r in spark.sql("SHOW TABLES IN polaris.gold").collect():
         spark.sql(f"DROP TABLE polaris.gold.{r.tableName}")

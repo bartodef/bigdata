@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Lab Polaris : partie Spark (a lancer depuis ~/work/bigdata apres 2-deploiement.sh)
-# Lancement : bash lab-09/3-lab.sh > sortie-polaris.txt 2>/dev/null
+# Lancement : bash lab-09/3-lab.sh > lab-09/sortie-polaris.txt 2>/dev/null
 cd "$(dirname "$0")/.."
 eval "$(aws configure export-credentials --profile default --format env)"
 export LAB_BUCKET_NAME="$KUBERNETES_NAMESPACE"

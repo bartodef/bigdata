@@ -1,0 +1,236 @@
++---------+
+|namespace|
++---------+
+|   silver|
++---------+
+
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|   silver|    users|      false|
+|   silver|   orders|      false|
++---------+---------+-----------+
+
+=== Table orders
++------+--------+
+|orders|quantity|
++------+--------+
+|  2830|    8617|
++------+--------+
+
+2026-11-04 15:17:24       1943 warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet
+2026-11-04 15:17:07      84055 warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet
+2026-11-04 15:17:07       7348 warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+2026-11-04 15:17:24       7295 warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+2026-11-04 15:17:24       4527 warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+2026-11-04 15:17:07       4456 warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+2026-11-04 15:17:08       1932 warehouse/silver/orders/metadata/v1.metadata.json
+2026-11-04 15:17:25       3005 warehouse/silver/orders/metadata/v2.metadata.json
+2026-11-04 15:17:25          1 warehouse/silver/orders/metadata/version-hint.text
+
+=== Metadata
++-------------------+------------------+---------+-----------------------+-----+-----+-----------+
+|snapshot_id        |parent_id         |operation|committed_at           |added|total|added_files|
++-------------------+------------------+---------+-----------------------+-----+-----+-----------+
+|964221037480772361 |NULL              |overwrite|2026-11-04 15:17:07.777|2829 |2829 |1          |
+|4316733754762097419|964221037480772361|append   |2026-11-04 15:17:24.897|1    |2830 |1          |
++-------------------+------------------+---------+-----------------------+-----+-----+-----------+
+
++-------------------------------------------------------------------+-----------+------------+------------------+
+|file_path                                                          |file_format|record_count|file_size_in_bytes|
++-------------------------------------------------------------------+-----------+------------+------------------+
+|data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet|PARQUET    |1           |1943              |
+|data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet |PARQUET    |2829        |84055             |
++-------------------------------------------------------------------+-----------+------------+------------------+
+
++-----------------------+-------------------+-------------------+
+|made_current_at        |snapshot_id        |is_current_ancestor|
++-----------------------+-------------------+-------------------+
+|2026-11-04 15:17:07.777|964221037480772361 |true               |
+|2026-11-04 15:17:24.897|4316733754762097419|true               |
++-----------------------+-------------------+-------------------+
+
+=== Deuxieme snapshot
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+|snapshot_id        |parent_id          |operation|committed_at           |added|total|added_files|
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+|964221037480772361 |NULL               |overwrite|2026-11-04 15:17:07.777|2829 |2829 |1          |
+|4316733754762097419|964221037480772361 |append   |2026-11-04 15:17:24.897|1    |2830 |1          |
+|9095799915095505145|4316733754762097419|append   |2026-11-04 15:18:38.034|3    |2833 |1          |
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+
++--------+
+|count(1)|
++--------+
+|    2833|
++--------+
+
++-------------------------------------------------------------------+-----------+------------+------------------+
+|file_path                                                          |file_format|record_count|file_size_in_bytes|
++-------------------------------------------------------------------+-----------+------------+------------------+
+|data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet  |PARQUET    |3           |1954              |
+|data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet|PARQUET    |1           |1943              |
+|data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet |PARQUET    |2829        |84055             |
++-------------------------------------------------------------------+-----------+------------+------------------+
+
+2026-11-04 15:17:24       1943 warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet
+2026-11-04 15:17:07      84055 warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet
+2026-11-04 15:18:37       1954 warehouse/silver/orders/data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet
+2026-11-04 15:17:07       7348 warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+2026-11-04 15:18:37       7332 warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+2026-11-04 15:17:24       7295 warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+2026-11-04 15:17:24       4527 warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+2026-11-04 15:18:38       4585 warehouse/silver/orders/metadata/snap-9095799915095505145-1-e011ebba-e73d-4d1a-91c5-b2c6cd9a9312.avro
+2026-11-04 15:17:07       4456 warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+2026-11-04 15:17:08       1932 warehouse/silver/orders/metadata/v1.metadata.json
+2026-11-04 15:17:25       3005 warehouse/silver/orders/metadata/v2.metadata.json
+2026-11-04 15:18:38       4071 warehouse/silver/orders/metadata/v3.metadata.json
+2026-11-04 15:18:38          1 warehouse/silver/orders/metadata/version-hint.text
+
+=== Time travel
+[Row(snapshot_id=964221037480772361), Row(snapshot_id=4316733754762097419), Row(snapshot_id=9095799915095505145)]
++----------------+
+|premier_snapshot|
++----------------+
+|            2829|
++----------------+
+
++----------+
+|maintenant|
++----------+
+|      2833|
++----------+
+
+=== Schema evolution
++----------+---------+-------+
+|  col_name|data_type|comment|
++----------+---------+-------+
+|  order_id|   string|   NULL|
+|   user_id|   string|   NULL|
+|ordered_at|timestamp|   NULL|
+|  quantity|      int|   NULL|
+|   product|   string|   NULL|
+|    source|   string|   NULL|
++----------+---------+-------+
+
++------+--------+
+|source|count(1)|
++------+--------+
+| spark|       1|
+|  NULL|    2833|
++------+--------+
+
++-------------------------------------------------------------------+-----------+------------+------------------+
+|file_path                                                          |file_format|record_count|file_size_in_bytes|
++-------------------------------------------------------------------+-----------+------------+------------------+
+|data/00000-21-eb060483-51f7-43fe-8e54-b4da02c60556-0-00001.parquet |PARQUET    |1           |2201              |
+|data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet  |PARQUET    |3           |1954              |
+|data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet|PARQUET    |1           |1943              |
+|data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet |PARQUET    |2829        |84055             |
++-------------------------------------------------------------------+-----------+------------+------------------+
+
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+|snapshot_id        |parent_id          |operation|committed_at           |added|total|added_files|
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+|964221037480772361 |NULL               |overwrite|2026-11-04 15:17:07.777|2829 |2829 |1          |
+|4316733754762097419|964221037480772361 |append   |2026-11-04 15:17:24.897|1    |2830 |1          |
+|9095799915095505145|4316733754762097419|append   |2026-11-04 15:18:38.034|3    |2833 |1          |
+|5508946757586184856|9095799915095505145|append   |2026-11-04 15:18:44.979|1    |2834 |1          |
++-------------------+-------------------+---------+-----------------------+-----+-----+-----------+
+
+2026-11-04 15:17:07       7348 warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
+2026-11-04 15:18:44       7366 warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro
+2026-11-04 15:18:37       7332 warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+2026-11-04 15:17:24       7295 warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
+2026-11-04 15:17:24       4527 warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
+2026-11-04 15:18:44       4630 warehouse/silver/orders/metadata/snap-5508946757586184856-1-d75aa0dd-1d85-4ae5-8e37-ed111bddea29.avro
+2026-11-04 15:18:38       4585 warehouse/silver/orders/metadata/snap-9095799915095505145-1-e011ebba-e73d-4d1a-91c5-b2c6cd9a9312.avro
+2026-11-04 15:17:07       4456 warehouse/silver/orders/metadata/snap-964221037480772361-1-d0455a5e-0b98-48ca-983d-971dddd4b516.avro
+2026-11-04 15:17:08       1932 warehouse/silver/orders/metadata/v1.metadata.json
+2026-11-04 15:17:25       3005 warehouse/silver/orders/metadata/v2.metadata.json
+2026-11-04 15:18:38       4071 warehouse/silver/orders/metadata/v3.metadata.json
+2026-11-04 15:18:43       4599 warehouse/silver/orders/metadata/v4.metadata.json
+2026-11-04 15:18:45       5665 warehouse/silver/orders/metadata/v5.metadata.json
+2026-11-04 15:18:45          1 warehouse/silver/orders/metadata/version-hint.text
+
+=== Parquet vs Iceberg
+2026-11-04 15:17:28          0 silver/spark/orders.parquet/
+2026-11-04 15:17:29      11833 silver/spark/orders.parquet/_SUCCESS
+2026-11-04 15:17:29     139556 silver/spark/orders.parquet/part-00000-47db5d3c-46fd-4168-8705-f8ce22ff236f-c000.snappy.parquet
+
+=== Exercice 1 table users
++--------+
+|count(1)|
++--------+
+|      50|
++--------+
+
++------------------+---------+---------+-----------------------+-----+-----+-----------+
+|snapshot_id       |parent_id|operation|committed_at           |added|total|added_files|
++------------------+---------+---------+-----------------------+-----+-----+-----------+
+|655989786843848798|NULL     |overwrite|2026-11-04 15:17:05.747|50   |50   |1          |
++------------------+---------+---------+-----------------------+-----+-----+-----------+
+
+=== Exercice 2 nouveau batch de users
++------------------+------------------+---------+-----------------------+-----+-----+-----------+
+|snapshot_id       |parent_id         |operation|committed_at           |added|total|added_files|
++------------------+------------------+---------+-----------------------+-----+-----+-----------+
+|655989786843848798|NULL              |overwrite|2026-11-04 15:17:05.747|50   |50   |1          |
+|320538005157052460|655989786843848798|append   |2026-11-04 15:18:52.411|2    |52   |1          |
++------------------+------------------+---------+-----------------------+-----+-----+-----------+
+
+=== Exercice 3 time travel users
++-----+
+|avant|
++-----+
+|   50|
++-----+
+
++-----+
+|apres|
++-----+
+|   52|
++-----+
+
+=== Exercice 4 colonne country
++-------+--------+
+|country|count(1)|
++-------+--------+
+|     FR|       1|
+|   NULL|      52|
++-------+--------+
+
++---------+---------+-------+
+| col_name|data_type|comment|
++---------+---------+-------+
+|  user_id|   string|   NULL|
+| username|   string|   NULL|
+|     name|   string|   NULL|
+|      sex|   string|   NULL|
+|    email|   string|   NULL|
+|birthdate|     date|   NULL|
+|   street|   string|   NULL|
+|     city|   string|   NULL|
+|    state|   string|   NULL|
+| zip_code|   string|   NULL|
+|  country|   string|   NULL|
++---------+---------+-------+
+
+=== Exercice 5 layout users
+2026-11-04 15:18:52       3245 warehouse/silver/users/data/00000-30-09b32dcc-36e7-4a84-8826-e51a89edbe64-0-00001.parquet
+2026-11-04 15:18:54       3310 warehouse/silver/users/data/00000-39-23544928-16f0-4adc-8dfa-42ca663e55c0-0-00001.parquet
+2026-11-04 15:17:05       7436 warehouse/silver/users/data/00000-73-53817c68-c93f-4f92-b013-0d7e7f65975c-0-00001.parquet
+2026-11-04 15:17:05       7740 warehouse/silver/users/metadata/09e12833-62ef-4220-8665-f613433e1d25-m0.avro
+2026-11-04 15:18:55       7693 warehouse/silver/users/metadata/9a462ec8-5965-44b1-b653-329f55640291-m0.avro
+2026-11-04 15:18:52       7729 warehouse/silver/users/metadata/9d0b67dc-ebfc-4988-9a90-a0003c07c0d5-m0.avro
+2026-11-04 15:18:55       4575 warehouse/silver/users/metadata/snap-2257958622582635502-1-9a462ec8-5965-44b1-b653-329f55640291.avro
+2026-11-04 15:18:52       4526 warehouse/silver/users/metadata/snap-320538005157052460-1-9d0b67dc-ebfc-4988-9a90-a0003c07c0d5.avro
+2026-11-04 15:17:05       4456 warehouse/silver/users/metadata/snap-655989786843848798-1-09e12833-62ef-4220-8665-f613433e1d25.avro
+2026-11-04 15:17:06       2201 warehouse/silver/users/metadata/v1.metadata.json
+2026-11-04 15:18:52       3258 warehouse/silver/users/metadata/v2.metadata.json
+2026-11-04 15:18:54       4063 warehouse/silver/users/metadata/v3.metadata.json
+2026-11-04 15:18:55       5126 warehouse/silver/users/metadata/v4.metadata.json
+2026-11-04 15:18:55          1 warehouse/silver/users/metadata/version-hint.text
+
+=== fin
+ICE_FINI

@@ -1,22 +1,21 @@
 ################ prep : tables silver visibles dans Polaris (Spark)
-bronze : users 50 orders 2829
 +---------+---------+-----------+
 |namespace|tableName|isTemporary|
 +---------+---------+-----------+
-|   silver|    users|      false|
 |   silver|   orders|      false|
+|   silver|    users|      false|
 +---------+---------+-----------+
 
 +------+-----+
 |orders|units|
 +------+-----+
-|  2829| 8615|
+|  2834| 8630|
 +------+-----+
 
 +-----+
 |users|
 +-----+
-|   50|
+|   53|
 +-----+
 
 +----------+---------+-------+
@@ -27,11 +26,12 @@ bronze : users 50 orders 2829
 |ordered_at|timestamp|   NULL|
 |  quantity|      int|   NULL|
 |   product|   string|   NULL|
+|    source|   string|   NULL|
 +----------+---------+-------+
 
 ################ dependances
 Resolved 18 packages in 2ms
-Checked 18 packages in 21ms
+Checked 18 packages in 0.95ms
 ################ labs 2 et 3 + exercices 1 a 4 (Trino)
 
 ====================================================================================================
@@ -76,19 +76,21 @@ Checked 18 packages in 21ms
 2  ordered_at  timestamp(6) with time zone              
 3    quantity                      integer              
 4     product                      varchar              
+5      source                      varchar              
 
 --- DESCRIBE silver.users
-      Column     Type Extra Comment
-0    user_id  varchar              
-1   username  varchar              
-2       name  varchar              
-3        sex  varchar              
-4      email  varchar              
-5  birthdate     date              
-6     street  varchar              
-7       city  varchar              
-8      state  varchar              
-9   zip_code  varchar              
+       Column     Type Extra Comment
+0     user_id  varchar              
+1    username  varchar              
+2        name  varchar              
+3         sex  varchar              
+4       email  varchar              
+5   birthdate     date              
+6      street  varchar              
+7        city  varchar              
+8       state  varchar              
+9    zip_code  varchar              
+10    country  varchar              
 
 --- SHOW CREATE TABLE silver.orders
 CREATE TABLE lakehouse.silver.orders (
@@ -96,13 +98,14 @@ CREATE TABLE lakehouse.silver.orders (
    user_id varchar,
    ordered_at timestamp(6) with time zone,
    quantity integer,
-   product varchar
+   product varchar,
+   source varchar
 )
 WITH (
    compression_codec = 'ZSTD',
    format = 'PARQUET',
    format_version = 2,
-   location = 's3://user-b-defelice-ece/warehouse/silver/orders'
+   location = 's3a://user-b-defelice-ece/warehouse/silver/orders'
 )
 
 ====================================================================================================
@@ -111,24 +114,24 @@ WITH (
 
 --- count orders
    orders
-0    2829
+0    2834
 
 --- count users
    users
-0     50
+0     53
 
 --- adresses par state
   state  users  missing_city
-0    AE      3             3
-1    FM      3             0
-2    TX      2             0
-3    DE      2             0
-4    PA      2             0
-5    VT      2             0
-6    NJ      2             0
-7    HI      2             0
-8    VI      2             0
-9    AP      2             2
+0    AP      3             3
+1    AE      3             3
+2    FM      3             0
+3    KY      2             0
+4    VI      2             0
+5    TX      2             0
+6    HI      2             0
+7    NJ      2             0
+8    DE      2             0
+9    VT      2             0
 
 --- orphan orders
    orphan_orders
@@ -139,20 +142,32 @@ WITH (
 ====================================================================================================
 
 --- orders$snapshots
-           snapshot_id                  committed_at operation engine added_records
-0  8768276225386078794 2026-11-09 09:18:42.955+00:00    append  spark          2829
+           snapshot_id                  committed_at  operation engine added_records
+0   964221037480772361 2026-11-04 15:17:07.777+00:00  overwrite  spark          2829
+1  4316733754762097419 2026-11-04 15:17:24.897+00:00     append  spark             1
+2  9095799915095505145 2026-11-04 15:18:38.034+00:00     append  spark             3
+3  5508946757586184856 2026-11-04 15:18:44.979+00:00     append  spark             1
 
 --- orders$files
-                                                                                                             file_path file_format  record_count  file_size_in_bytes
-0  s3://user-b-defelice-ece/warehouse/silver/orders/data/00000-10-e7e54f32-08a0-42f7-8b21-7d88fbaa7b84-0-00001.parquet     PARQUET          2829               84055
+                                                                                                               file_path file_format  record_count  file_size_in_bytes
+0    s3a://user-b-defelice-ece/warehouse/silver/orders/data/00000-8-d0d67c00-af63-43e7-bb00-a877ad2aea7f-0-00001.parquet     PARQUET             3                1954
+1   s3a://user-b-defelice-ece/warehouse/silver/orders/data/00000-21-eb060483-51f7-43fe-8e54-b4da02c60556-0-00001.parquet     PARQUET             1                2201
+2  s3a://user-b-defelice-ece/warehouse/silver/orders/data/00000-160-7876f566-bba1-4c41-b6af-7ea1ef58ef80-0-00001.parquet     PARQUET             1                1943
+3   s3a://user-b-defelice-ece/warehouse/silver/orders/data/00000-77-0a700ee4-e08c-4eb8-8498-5dab4306727f-0-00001.parquet     PARQUET          2829               84055
 
 --- orders$history
-                made_current_at          snapshot_id parent_id  is_current_ancestor
-0 2026-11-09 09:18:42.955+00:00  8768276225386078794      None                 True
+                made_current_at          snapshot_id     parent_id  is_current_ancestor
+0 2026-11-04 15:17:07.777+00:00   964221037480772361           NaN                 True
+1 2026-11-04 15:17:24.897+00:00  4316733754762097419  9.642210e+17                 True
+2 2026-11-04 15:18:38.034+00:00  9095799915095505145  4.316734e+18                 True
+3 2026-11-04 15:18:44.979+00:00  5508946757586184856  9.095800e+18                 True
 
 --- orders$manifests
-                                                                                                     path  added_data_files_count  existing_data_files_count
-0  s3://user-b-defelice-ece/warehouse/silver/orders/metadata/64d3bf88-c29a-424f-9280-70e4f228b11d-m0.avro                       1                          0
+                                                                                                      path  added_data_files_count  existing_data_files_count
+0  s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro                       1                          0
+1  s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro                       1                          0
+2  s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro                       1                          0
+3  s3a://user-b-defelice-ece/warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro                       1                          0
 
 --- aws s3 ls warehouse/silver/orders/
 2026-11-09 09:18:42      84055 warehouse/silver/orders/data/00000-10-e7e54f32-08a0-42f7-8b21-7d88fbaa7b84-0-00001.parquet
@@ -172,6 +187,8 @@ WITH (
 2026-11-04 18:13:05        950 warehouse/silver/orders/data/20261104_181304_00274_2sz6w-46cbac2d-2d23-43c8-9c94-40f1a4b9eb0d.parquet
 2026-11-04 18:29:45       1036 warehouse/silver/orders/data/20261104_182943_00108_eez4h-1bafc5aa-3fb4-45ea-846b-f0bfa081fe5a.parquet
 2026-11-04 18:29:56        949 warehouse/silver/orders/data/20261104_182955_00113_eez4h-97e793c5-a477-4e3d-b6d1-6e860d9e3cac.parquet
+2026-11-09 09:20:10       1036 warehouse/silver/orders/data/20261109_092009_00194_ttkbn-570a7ed7-ecc5-4e64-a40e-f7ecc9e6621f.parquet
+2026-11-09 09:20:19        951 warehouse/silver/orders/data/20261109_092018_00199_ttkbn-3c576400-8513-4d1e-8262-1c8c528bfa8e.parquet
 2026-11-04 17:33:39       6648 warehouse/silver/orders/metadata/00000-348e6be8-e968-4101-a1ce-f5872dbaee6d.metadata.json
 2026-11-09 09:18:43       1975 warehouse/silver/orders/metadata/00000-49583db4-0ed4-4693-b1ac-98f331911620.metadata.json
 2026-11-04 18:01:45       1972 warehouse/silver/orders/metadata/00000-57f85e38-5c82-4804-ba30-0c7c5e4c564f.metadata.json
@@ -182,9 +199,12 @@ WITH (
 2026-11-04 17:33:53       7715 warehouse/silver/orders/metadata/00001-09c7459e-558a-481e-a914-92a0d065bee0.metadata.json
 2026-11-04 18:13:00       2993 warehouse/silver/orders/metadata/00001-34f63d2b-f58b-4674-bad0-a31a13c4d858.metadata.json
 2026-11-04 18:06:33       2998 warehouse/silver/orders/metadata/00001-c1627c2f-ad06-48d5-9d25-4bdad7763a20.metadata.json
+2026-11-09 09:20:11       2995 warehouse/silver/orders/metadata/00001-d216596f-7d5e-4e2b-9756-b9834e4aabd5.metadata.json
 2026-11-04 18:06:40       4064 warehouse/silver/orders/metadata/00002-0d84fbcc-f987-496e-b9f4-b7799cc45b67.metadata.json
+2026-11-09 09:20:20       4060 warehouse/silver/orders/metadata/00002-5f6b4f46-ce2f-4fbf-b393-a0380a20a943.metadata.json
 2026-11-04 18:29:56       4064 warehouse/silver/orders/metadata/00002-71305515-159f-490d-a8b2-60314d1b7096.metadata.json
 2026-11-04 18:06:40       7291 warehouse/silver/orders/metadata/0c74b08e-3f54-406a-919d-566b96c14c82-m0.avro
+2026-11-09 09:20:19       7294 warehouse/silver/orders/metadata/10324c63-ba25-404f-ac91-9f669b909168-m0.avro
 2026-11-04 18:29:45       7314 warehouse/silver/orders/metadata/22c2682c-1f9a-4b28-b840-bcbb00a73dce-m0.avro
 2026-11-04 18:28:01       7352 warehouse/silver/orders/metadata/27744222-91b4-4c00-a0ba-087e46af4363-m0.avro
 2026-11-04 18:01:45       7347 warehouse/silver/orders/metadata/3723b312-7118-4cab-914f-c91410568c5c-m0.avro
@@ -198,6 +218,7 @@ WITH (
 2026-11-04 15:17:07       7348 warehouse/silver/orders/metadata/d0455a5e-0b98-48ca-983d-971dddd4b516-m0.avro
 2026-11-04 15:18:44       7366 warehouse/silver/orders/metadata/d75aa0dd-1d85-4ae5-8e37-ed111bddea29-m0.avro
 2026-11-04 15:18:37       7332 warehouse/silver/orders/metadata/e011ebba-e73d-4d1a-91c5-b2c6cd9a9312-m0.avro
+2026-11-09 09:20:10       7310 warehouse/silver/orders/metadata/e86557f3-6c2a-4c6c-97e4-acc6407620da-m0.avro
 2026-11-04 18:13:00       7314 warehouse/silver/orders/metadata/f3fe3211-6b04-4f61-ad3b-9926bd5bb73c-m0.avro
 2026-11-04 15:17:24       7295 warehouse/silver/orders/metadata/fa3a5a93-58cf-4749-8982-fcc6ca77ba7d-m0.avro
 2026-11-04 18:28:01       4459 warehouse/silver/orders/metadata/snap-1389325807751875982-1-27744222-91b4-4c00-a0ba-087e46af4363.avro
@@ -205,8 +226,10 @@ WITH (
 2026-11-04 18:29:45       4533 warehouse/silver/orders/metadata/snap-2278175157894592384-1-22c2682c-1f9a-4b28-b840-bcbb00a73dce.avro
 2026-11-04 15:17:24       4527 warehouse/silver/orders/metadata/snap-4316733754762097419-1-fa3a5a93-58cf-4749-8982-fcc6ca77ba7d.avro
 2026-11-04 17:33:39       4676 warehouse/silver/orders/metadata/snap-5270476602061442632-1-99359b12-9e44-4903-838f-436c1ac35ed5.avro
+2026-11-09 09:20:10       4528 warehouse/silver/orders/metadata/snap-5470556266271378472-1-e86557f3-6c2a-4c6c-97e4-acc6407620da.avro
 2026-11-04 15:18:44       4630 warehouse/silver/orders/metadata/snap-5508946757586184856-1-d75aa0dd-1d85-4ae5-8e37-ed111bddea29.avro
 2026-11-04 18:06:33       4533 warehouse/silver/orders/metadata/snap-6565903723803173377-1-504b72e4-c751-42fd-93f4-b49c164a945a.avro
+2026-11-09 09:20:19       4579 warehouse/silver/orders/metadata/snap-6725585043876083813-1-10324c63-ba25-404f-ac91-9f669b909168.avro
 2026-11-04 18:06:40       4583 warehouse/silver/orders/metadata/snap-7189824778970656950-1-0c74b08e-3f54-406a-919d-566b96c14c82.avro
 2026-11-04 18:01:45       4456 warehouse/silver/orders/metadata/snap-719925307057886898-1-3723b312-7118-4cab-914f-c91410568c5c.avro
 2026-11-04 17:33:52       4729 warehouse/silver/orders/metadata/snap-7521881510251419389-1-bb3b8e44-d5e9-4de2-afe0-28416a3cadc2.avro
@@ -255,25 +278,25 @@ Fragment 1 [SOURCE]
     │   count_4 := count(*)
     └─ InnerJoin[criteria = (user_id = user_id_0), distribution = REPLICATED]
        │   Layout: [state:varchar]
-       │   Estimates: {rows: ? (?), cpu: ?, memory: 4.02kB, network: 0B}
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 4.22kB, network: 0B}
        │   Distribution: REPLICATED
        │   dynamicFilterAssignments = {user_id_0 -> #df_314}
-       ├─ ScanFilter[table = lakehouse:silver.orders$data@8768276225386078794, dynamicFilters = {user_id = #df_314}]
+       ├─ ScanFilter[table = lakehouse:silver.orders$data@5508946757586184856, dynamicFilters = {user_id = #df_314}]
        │      Layout: [user_id:varchar]
-       │      Estimates: {rows: 2829 (22.36kB), cpu: 22.36k, memory: 0B, network: 0B}/{rows: 2829 (22.36kB), cpu: 22.36k, memory: 0B, network: 0B}
+       │      Estimates: {rows: 2834 (23.16kB), cpu: 23.16k, memory: 0B, network: 0B}/{rows: 2834 (23.16kB), cpu: 23.16k, memory: 0B, network: 0B}
        │      user_id := 2:user_id:varchar
        └─ LocalExchange[partitioning = SINGLE]
           │   Layout: [user_id_0:varchar, state:varchar]
-          │   Estimates: {rows: 50 (4.02kB), cpu: 0, memory: 0B, network: 0B}
+          │   Estimates: {rows: 53 (4.22kB), cpu: 0, memory: 0B, network: 0B}
           └─ RemoteSource[sourceFragmentIds = [2]]
                  Layout: [user_id_0:varchar, state:varchar]
 
 Fragment 2 [SOURCE]
     Output layout: [user_id_0, state]
     Output partitioning: BROADCAST []
-    TableScan[table = lakehouse:silver.users$data@6769276086529345536]
+    TableScan[table = lakehouse:silver.users$data@2797083430071383764]
         Layout: [user_id_0:varchar, state:varchar]
-        Estimates: {rows: 50 (4.02kB), cpu: 4.02k, memory: 0B, network: 0B}
+        Estimates: {rows: 53 (4.22kB), cpu: 4.22k, memory: 0B, network: 0B}
         state := 9:state:varchar
         user_id_0 := 1:user_id:varchar
 
@@ -281,88 +304,88 @@ Fragment 2 [SOURCE]
 
 --- EXPLAIN ANALYZE
 Trino version: 480
-Queued: 531.51us, Analysis: 665.85ms, Planning: 104.31ms, Execution: 891.78ms, Finishing: 0.00ns
+Queued: 564.10us, Analysis: 398.72ms, Planning: 526.69ms, Execution: 2.95s, Finishing: 0.00ns
 Fragment 1 [HASH]
-    CPU: 4.02ms, Scheduled: 4.12ms, Blocked 2.03s (Input: 1.02s, Output: 0.00ns), Input: 37 rows (592B); per task: avg.: 37.00 std.dev.: 0.00, Output: 37 rows (592B)
-    Peak Memory: 840B, Tasks count: 1; per task: max: 840B
+    CPU: 11.12ms, Scheduled: 166.62ms, Blocked 6.84s (Input: 3.42s, Output: 0.00ns), Input: 42 rows (672B); per task: avg.: 42.00 std.dev.: 0.00, Output: 37 rows (592B)
+    Peak Memory: 227.47kB, Tasks count: 1; per task: max: 227.47kB
     Output layout: [state, count]
     Output partitioning: SINGLE []
     Aggregate[type = FINAL, keys = [state]]
     │   Layout: [state:varchar, count:bigint]
     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
-    │   CPU: 3.00ms (5.56%), Scheduled: 3.00ms (1.49%), Blocked: 0.00ns (0.00%), Output: 37 rows (592B)
-    │   Input avg.: 18.50 rows, Input std.dev.: 2.70%
+    │   CPU: 7.00ms (3.02%), Scheduled: 86.00ms (8.02%), Blocked: 0.00ns (0.00%), Output: 37 rows (592B)
+    │   Input avg.: 21.00 rows, Input std.dev.: 0.00%
     │   count := count(count_4)
     └─ LocalExchange[partitioning = HASH, arguments = [state::varchar]]
        │   Layout: [state:varchar, count_4:bigint]
        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
-       │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 1.02s (36.44%), Output: 37 rows (592B)
-       │   Input avg.: 18.50 rows, Input std.dev.: 100.00%
+       │   CPU: 1.00ms (0.43%), Scheduled: 1.00ms (0.09%), Blocked: 3.41s (39.51%), Output: 42 rows (672B)
+       │   Input avg.: 21.00 rows, Input std.dev.: 80.95%
        └─ RemoteSource[sourceFragmentIds = [2]]
               Layout: [state:varchar, count_4:bigint]
-              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 1.02s (36.44%), Output: 37 rows (592B)
-              Input avg.: 18.50 rows, Input std.dev.: 100.00%
+              CPU: 1.00ms (0.43%), Scheduled: 1.00ms (0.09%), Blocked: 3.42s (39.62%), Output: 42 rows (672B)
+              Input avg.: 21.00 rows, Input std.dev.: 80.95%
 
 Fragment 2 [SOURCE]
-    CPU: 42.53ms, Scheduled: 221.02ms, Blocked 758.82ms (Input: 361.44ms, Output: 0.00ns), Input: 2879 rows (126.66kB); per task: avg.: 2879.00 std.dev.: 0.00, Output: 37 rows (592B)
-    Peak Memory: 128.42kB, Tasks count: 1; per task: max: 128.42kB
+    CPU: 208.44ms, Scheduled: 886.15ms, Blocked 1.80s (Input: 584.85ms, Output: 0.00ns), Input: 2887 rows (127kB); per task: avg.: 2887.00 std.dev.: 0.00, Output: 42 rows (672B)
+    Peak Memory: 218.62kB, Tasks count: 1; per task: max: 218.62kB
     Output layout: [state, count_4]
     Output partitioning: HASH [state]
     Aggregate[type = PARTIAL, keys = [state]]
     │   Layout: [state:varchar, count_4:bigint]
-    │   CPU: 10.00ms (18.52%), Scheduled: 34.00ms (16.83%), Blocked: 0.00ns (0.00%), Output: 37 rows (592B)
-    │   Input avg.: 2829.00 rows, Input std.dev.: 0.00%
+    │   CPU: 40.00ms (17.24%), Scheduled: 180.00ms (16.79%), Blocked: 0.00ns (0.00%), Output: 42 rows (672B)
+    │   Input avg.: 708.50 rows, Input std.dev.: 172.80%
     │   count_4 := count(*)
     └─ InnerJoin[criteria = (user_id = user_id_0), distribution = REPLICATED]
        │   Layout: [state:varchar]
-       │   Estimates: {rows: ? (?), cpu: ?, memory: 4.02kB, network: 0B}
-       │   CPU: 17.00ms (31.48%), Scheduled: 116.00ms (57.43%), Blocked: 292.00ms (10.43%), Output: 2829 rows (19.34kB)
-       │   Left (probe) Input avg.: 2829.00 rows, Input std.dev.: 0.00%
-       │   Right (build) Input avg.: 50.00 rows, Input std.dev.: 0.00%
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 4.22kB, network: 0B}
+       │   CPU: 65.00ms (28.02%), Scheduled: 308.00ms (28.73%), Blocked: 1.02s (11.82%), Output: 2834 rows (19.37kB)
+       │   Left (probe) Input avg.: 708.50 rows, Input std.dev.: 172.80%
+       │   Right (build) Input avg.: 53.00 rows, Input std.dev.: 0.00%
        │   Distribution: REPLICATED
        │   dynamicFilterAssignments = {user_id_0 -> #df_373}
-       ├─ ScanFilter[table = lakehouse:silver.orders$data@8768276225386078794, dynamicFilters = {user_id = #df_373}]
+       ├─ ScanFilter[table = lakehouse:silver.orders$data@5508946757586184856, dynamicFilters = {user_id = #df_373}]
        │      Layout: [user_id:varchar]
-       │      Estimates: {rows: 2829 (22.36kB), cpu: 22.36k, memory: 0B, network: 0B}/{rows: 2829 (22.36kB), cpu: 22.36k, memory: 0B, network: 0B}
-       │      CPU: 12.00ms (22.22%), Scheduled: 12.00ms (5.94%), Blocked: 0.00ns (0.00%), Output: 2829 rows (123.33kB)
-       │      Input avg.: 2829.00 rows, Input std.dev.: 0.00%
+       │      Estimates: {rows: 2834 (23.16kB), cpu: 23.16k, memory: 0B, network: 0B}/{rows: 2834 (23.16kB), cpu: 23.16k, memory: 0B, network: 0B}
+       │      CPU: 99.00ms (42.67%), Scheduled: 394.00ms (36.75%), Blocked: 0.00ns (0.00%), Output: 2834 rows (123.53kB)
+       │      Input avg.: 708.50 rows, Input std.dev.: 172.80%
        │      user_id := 2:user_id:varchar
-       │      Input: 2829 rows (124.32kB), Filtered: 0.00%, Physical input: 82.08kB, Physical input time: 55.46us, Splits: 1, Splits generation wait time: 288.88ms
+       │      Input: 2834 rows (124.52kB), Filtered: 0.00%, Physical input: 88.04kB, Physical input time: 192.94us, Splits: 4, Splits generation wait time: 731.32ms
        │      Dynamic filters: 
-       │          - df_373, [ SortedRangeSet[type=varchar, ranges=50, {[09a0a0f6-73b0-4091-b634-c1694f76e388], ..., [f94d6204-6808-493f-9fed-2c43e256a6dc]}] ], collection time=334.00ms
+       │          - df_373, [ SortedRangeSet[type=varchar, ranges=53, {[09a0a0f6-73b0-4091-b634-c1694f76e388], ..., [f94d6204-6808-493f-9fed-2c43e256a6dc]}] ], collection time=785.01ms
        └─ LocalExchange[partitioning = SINGLE]
           │   Layout: [user_id_0:varchar, state:varchar]
-          │   Estimates: {rows: 50 (4.02kB), cpu: 0, memory: 0B, network: 0B}
-          │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 106.00ms (3.79%), Output: 50 rows (2.34kB)
-          │   Input avg.: 25.00 rows, Input std.dev.: 8.00%
+          │   Estimates: {rows: 53 (4.22kB), cpu: 0, memory: 0B, network: 0B}
+          │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 196.00ms (2.27%), Output: 53 rows (2.48kB)
+          │   Input avg.: 26.50 rows, Input std.dev.: 100.00%
           └─ RemoteSource[sourceFragmentIds = [3]]
                  Layout: [user_id_0:varchar, state:varchar]
-                 CPU: 1.00ms (1.85%), Scheduled: 1.00ms (0.50%), Blocked: 361.00ms (12.90%), Output: 50 rows (2.34kB)
-                 Input avg.: 25.00 rows, Input std.dev.: 8.00%
+                 CPU: 1.00ms (0.43%), Scheduled: 2.00ms (0.19%), Blocked: 585.00ms (6.78%), Output: 53 rows (2.48kB)
+                 Input avg.: 26.50 rows, Input std.dev.: 100.00%
 
 Fragment 3 [SOURCE]
-    CPU: 11.39ms, Scheduled: 36.60ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 50 rows (2.54kB); per task: avg.: 50.00 std.dev.: 0.00, Output: 50 rows (2.54kB)
-    Peak Memory: 3.62kB, Tasks count: 1; per task: max: 3.62kB
+    CPU: 18.37ms, Scheduled: 100.49ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 53 rows (2.68kB); per task: avg.: 53.00 std.dev.: 0.00, Output: 53 rows (2.68kB)
+    Peak Memory: 3.79kB, Tasks count: 1; per task: max: 3.79kB
     Output layout: [user_id_0, state]
     Output partitioning: BROADCAST []
-    TableScan[table = lakehouse:silver.users$data@6769276086529345536]
+    TableScan[table = lakehouse:silver.users$data@2797083430071383764]
         Layout: [user_id_0:varchar, state:varchar]
-        Estimates: {rows: 50 (4.02kB), cpu: 4.02k, memory: 0B, network: 0B}
-        CPU: 11.00ms (20.37%), Scheduled: 36.00ms (17.82%), Blocked: 0.00ns (0.00%), Output: 50 rows (2.54kB)
-        Input avg.: 50.00 rows, Input std.dev.: 0.00%
+        Estimates: {rows: 53 (4.22kB), cpu: 4.22k, memory: 0B, network: 0B}
+        CPU: 18.00ms (7.76%), Scheduled: 100.00ms (9.33%), Blocked: 0.00ns (0.00%), Output: 53 rows (2.68kB)
+        Input avg.: 53.00 rows, Input std.dev.: 0.00%
         state := 9:state:varchar
         user_id_0 := 1:user_id:varchar
-        Input: 50 rows (2.54kB), Physical input: 7.26kB, Physical input time: 26.89us, Splits: 1, Splits generation wait time: 67.85ms
+        Input: 53 rows (2.68kB), Physical input: 7.81kB, Physical input time: 25.41us, Splits: 1, Splits generation wait time: 110.54ms
 
 
 
 --- system.runtime.queries
                       query_id     state  elapsed_ms                                                                     query
-0  20261109_091905_00143_ttkbn   RUNNING          -2  \n    SELECT query_id, state,\n           date_diff('millisecond', creat
-1  20261109_091904_00142_ttkbn  FINISHED        1613  EXPLAIN ANALYZE\n    SELECT u.state, count(*) AS orders\n    FROM lakeho
-2  20261109_091903_00141_ttkbn  FINISHED         538  EXPLAIN (TYPE DISTRIBUTED)\n    SELECT u.state, count(*) AS orders\n    
-3  20261109_091901_00140_ttkbn  FINISHED         138  \n    SELECT path, added_data_files_count, existing_data_files_count\n  
-4  20261109_091901_00139_ttkbn  FINISHED         240                           SELECT * FROM lakehouse.silver."orders$history"
+0  20261109_110124_00018_cz8x2   RUNNING         -77  \n    SELECT query_id, state,\n           date_diff('millisecond', creat
+1  20261109_110120_00017_cz8x2  FINISHED        3503  EXPLAIN ANALYZE\n    SELECT u.state, count(*) AS orders\n    FROM lakeho
+2  20261109_110119_00016_cz8x2  FINISHED         934  EXPLAIN (TYPE DISTRIBUTED)\n    SELECT u.state, count(*) AS orders\n    
+3  20261109_110117_00015_cz8x2  FINISHED         401  \n    SELECT path, added_data_files_count, existing_data_files_count\n  
+4  20261109_110116_00014_cz8x2  FINISHED         604                           SELECT * FROM lakehouse.silver."orders$history"
 
 ====================================================================================================
 === LAB 2 / Gold layer
@@ -405,31 +428,31 @@ Index: []
      product  orders  units  units_rank
 0  croissant     491   1523           1
 1      drink     484   1493           2
-2    brioche     468   1424           3
-3      bread     458   1420           4
+2      bread     459   1425           3
+3    brioche     468   1424           4
 4      donut     462   1390           5
-5     cookie     466   1365           6
+5     cookie     470   1375           6
 
 --- CTAS user_activity
    rows
-0    50
+0    53
 
 --- user_activity
                                 user_id state  age  orders  units                   first_order_at                    last_order_at
-0  9793b9b4-1374-4146-b2c5-bd89b70b3420    HI   65     100    289 2020-02-06 22:28:23.377915+00:00 2020-02-11 01:57:32.773432+00:00
-1  2051acef-097a-4e10-b6fe-bc0e7ecddbaf    VI    9     100    301 2020-03-13 06:21:16.892555+00:00 2020-03-17 09:02:08.476647+00:00
+0  2051acef-097a-4e10-b6fe-bc0e7ecddbaf    VI    9     100    301 2020-03-13 06:21:16.892555+00:00 2020-03-17 09:02:08.476647+00:00
+1  9793b9b4-1374-4146-b2c5-bd89b70b3420    HI   65     100    289 2020-02-06 22:28:23.377915+00:00 2020-02-11 01:57:32.773432+00:00
 2  8d605936-0380-4b70-8d03-c91e4f8d5238    WA   76      99    280 2020-03-06 12:42:24.432345+00:00 2020-03-10 14:46:03.127489+00:00
 3  72bb912d-7da6-4785-b63b-4dc3a559e463    NJ   74      97    317 2020-02-15 03:39:36.282921+00:00 2020-02-19 03:23:18.610446+00:00
 4  52828d80-44b5-41f7-97ac-6aa8bb2488a3    IA   35      97    303 2020-02-11 02:16:02.488268+00:00 2020-02-15 02:18:44.854831+00:00
 5  0dde29a6-baa4-471a-9d24-67ac778eedb3    VI   85      92    285 2020-01-08 11:20:45.094193+00:00 2020-01-12 06:23:02.514874+00:00
 6  97fa7f04-8363-4007-9cae-9610c72c1fe3    AP   52      92    285 2020-03-27 11:09:51.257559+00:00 2020-03-31 06:01:03.068375+00:00
-7  90164161-cfa7-41cd-a631-d00b26d794d3    CA   82      91    270 2020-02-22 14:30:47.467747+00:00 2020-02-26 08:13:22.890319+00:00
+7  90164161-cfa7-41cd-a631-d00b26d794d3    CA   82      92    274 2020-02-22 14:30:47.467747+00:00 2020-02-26 08:13:22.890319+00:00
 8  832920b7-c143-4426-b72f-871a45ee432d    HI   51      91    272 2020-04-08 18:29:41.913897+00:00 2020-04-12 12:41:22.197741+00:00
 9  d045dd1c-6684-49e3-b1f8-343ea99f1318    UT   33      86    256 2020-03-02 22:15:57.890701+00:00 2020-03-06 11:03:10.312652+00:00
 
 --- users sans commande
    users_sans_commande
-0                    0
+0                    3
 
 --- SHOW TABLES gold
                    Table
@@ -439,14 +462,14 @@ Index: []
 
 --- top_products$files
                                                                                                                                                              file_path  record_count  file_size_in_bytes
-0  s3://user-b-defelice-ece/warehouse/gold/top_products-c2e26fcf471548628dbc8d53b91d4319/data/20261109_091913_00148_ttkbn-5d9eae86-01b9-41ed-a114-40f5ebf418a0.parquet             6                 760
+0  s3://user-b-defelice-ece/warehouse/gold/top_products-efb3f08162c94d02a8eeb15f28a4f02d/data/20261109_110135_00023_cz8x2-0a2cd629-62bd-4a33-a6bd-b331bec974ff.parquet             6                 760
 
 ====================================================================================================
 === LAB 2 / Validation
 ====================================================================================================
-units  silver=8615 gold_state_month=8615 top_products=8615
-users  silver=50 user_activity=50
-orders silver=2829 user_activity=2829
+units  silver=8630 gold_state_month=8630 top_products=8630
+users  silver=53 user_activity=53
+orders silver=2834 user_activity=2834
 OK      silver_units == gold_units
 OK      silver_units == product_units
 OK      silver_users == gold_users
@@ -466,9 +489,9 @@ OK      silver_orders == gold_orders
 
 --- top_products$snapshots
            snapshot_id                  committed_at operation
-0  7951056437267566866 2026-11-09 09:19:15.064+00:00    append
-1  5919678746533310502 2026-11-09 09:19:25.973+00:00    delete
-2  2365973249982093320 2026-11-09 09:19:28.024+00:00    append
+0  7437251863693689898 2026-11-09 11:01:37.922+00:00    append
+1  4865815557179432209 2026-11-09 11:01:50.469+00:00    delete
+2  8372922302188857645 2026-11-09 11:01:52.261+00:00    append
 
 --- time travel (premier snapshot)
    products
@@ -488,7 +511,7 @@ OK      silver_orders == gold_orders
 
 --- CTAS dim_user
    rows
-0    50
+0    53
 
 --- CTAS dim_product
    rows
@@ -635,14 +658,14 @@ periode : 2020-01-01 -> 2020-04-27
 
 --- CTAS fact_orders
    rows
-0  2829
+0  2834
 
 --- nombre de lignes
     table_name  row_count
 0  dim_product          6
-1     dim_user         50
+1     dim_user         53
 2     dim_date        118
-3  fact_orders       2829
+3  fact_orders       2834
 
 ====================================================================================================
 === LAB 3 / Query the star
@@ -682,14 +705,14 @@ Index: []
 ====================================================================================================
 === LAB 3 / Validation
 ====================================================================================================
-orders silver=2829 fact=2829 | units silver=8615 fact=8615 | unmatched=0
+orders silver=2834 fact=2834 | units silver=8630 fact=8630 | unmatched=0
 OK      silver_orders == fact_orders
 OK      silver_units == fact_units
 OK      unmatched == 0
 
 --- controles supplementaires
    order_id_en_double  user_id_en_double  mauvais_user_key
-0                   0                  0                 0
+0                   1                  0                 0
 
 ====================================================================================================
 === EXERCICE 1 / table partitionnee
@@ -701,20 +724,20 @@ OK      unmatched == 0
 
 --- fichiers non partitionnee
                                                                                                                                                                       file_path  record_count
-0  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month-b91219e4f4814db58b13c8725c23bb68/data/20261109_091906_00146_ttkbn-39ac7e2a-bc79-49f4-adbc-c9ed93cf6da7.parquet            50
+0  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month-4f532eb8fc95417f98c5259764810b4a/data/20261109_110126_00021_cz8x2-16a69667-e531-49ee-91b9-b686f41c6ded.parquet            50
 
 --- fichiers partitionnee
                                                                                                                                                                                                file_path           partition  record_count
-0  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-ca6ed591c0c5474292539abbe4322f9c/data/month_month=2020-01/20261109_091959_00185_ttkbn-89549128-7b8e-4268-a84d-0868fd5ad7bc.parquet  (month_month: 600)            17
-1  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-ca6ed591c0c5474292539abbe4322f9c/data/month_month=2020-03/20261109_091959_00185_ttkbn-870453b7-6562-4659-83db-d2ff088c6db4.parquet  (month_month: 602)            13
-2  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-ca6ed591c0c5474292539abbe4322f9c/data/month_month=2020-02/20261109_091959_00185_ttkbn-7cb88571-37e8-435c-8a30-aa9b27cc50b8.parquet  (month_month: 601)            10
-3  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-ca6ed591c0c5474292539abbe4322f9c/data/month_month=2020-04/20261109_091959_00185_ttkbn-f3f7ac78-314f-4463-9c03-39b15386e89a.parquet  (month_month: 603)            10
+0  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-d82939032a0b4c358097161d8edccfcb/data/month_month=2020-04/20261109_110224_00060_cz8x2-d0140711-f3ff-41f9-b0cc-bc30353f1a41.parquet  (month_month: 603)            10
+1  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-d82939032a0b4c358097161d8edccfcb/data/month_month=2020-01/20261109_110224_00060_cz8x2-4aaa360c-f1af-4d29-b1d2-40d1873131db.parquet  (month_month: 600)            17
+2  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-d82939032a0b4c358097161d8edccfcb/data/month_month=2020-03/20261109_110224_00060_cz8x2-09e6d3a0-9567-4d33-9f0e-eb440bea0d54.parquet  (month_month: 602)            13
+3  s3://user-b-defelice-ece/warehouse/gold/orders_by_state_month_part-d82939032a0b4c358097161d8edccfcb/data/month_month=2020-02/20261109_110224_00060_cz8x2-b456f8ee-e518-43ff-9458-1b5c247c4e90.parquet  (month_month: 601)            10
 
 --- EXPLAIN ANALYZE non partitionnee
 Trino version: 480
-Queued: 342.80us, Analysis: 67.66ms, Planning: 40.73ms, Execution: 415.58ms, Finishing: 0.00ns
+Queued: 608.28us, Analysis: 174.92ms, Planning: 119.31ms, Execution: 502.52ms, Finishing: 0.00ns
 Fragment 1 [SINGLE]
-    CPU: 2.41ms, Scheduled: 2.51ms, Blocked 296.19ms (Input: 197.07ms, Output: 0.00ns), Input: 1 row (9B); per task: avg.: 1.00 std.dev.: 0.00, Output: 1 row (9B)
+    CPU: 1.88ms, Scheduled: 2.00ms, Blocked 588.26ms (Input: 390.65ms, Output: 0.00ns), Input: 1 row (9B); per task: avg.: 1.00 std.dev.: 0.00, Output: 1 row (9B)
     Peak Memory: 96B, Tasks count: 1; per task: max: 96B
     Output layout: [sum]
     Output partitioning: SINGLE []
@@ -727,15 +750,15 @@ Fragment 1 [SINGLE]
     └─ LocalExchange[partitioning = SINGLE]
        │   Layout: [sum_0:bigint]
        │   Estimates: {rows: 13 (113B), cpu: 0, memory: 0B, network: 0B}
-       │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 99.00ms (33.45%), Output: 1 row (9B)
+       │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 198.00ms (33.62%), Output: 1 row (9B)
        │   Input avg.: 0.50 rows, Input std.dev.: 100.00%
        └─ RemoteSource[sourceFragmentIds = [2]]
               Layout: [sum_0:bigint]
-              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 197.00ms (66.55%), Output: 1 row (9B)
+              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 391.00ms (66.38%), Output: 1 row (9B)
               Input avg.: 0.50 rows, Input std.dev.: 100.00%
 
 Fragment 2 [SOURCE]
-    CPU: 8.98ms, Scheduled: 41.15ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 50 rows (1.06kB); per task: avg.: 50.00 std.dev.: 0.00, Output: 1 row (9B)
+    CPU: 5.35ms, Scheduled: 6.51ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 50 rows (1019B); per task: avg.: 50.00 std.dev.: 0.00, Output: 1 row (9B)
     Peak Memory: 96B, Tasks count: 1; per task: max: 96B
     Output layout: [sum_0]
     Output partitioning: SINGLE []
@@ -745,43 +768,43 @@ Fragment 2 [SOURCE]
     │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 0.00ns (0.00%), Output: 1 row (9B)
     │   Input avg.: 17.00 rows, Input std.dev.: 0.00%
     │   sum_0 := sum(units)
-    └─ ScanFilterProject[table = lakehouse:gold.orders_by_state_month$data@402249839238054966, filterPredicate = (month = timestamp(6) with time zone '2020-01-01 00:00:00.000000 UTC')]
+    └─ ScanFilterProject[table = lakehouse:gold.orders_by_state_month$data@4927860157111828828, filterPredicate = (month = timestamp(6) with time zone '2020-01-01 00:00:00.000000 UTC')]
            Layout: [units:bigint]
            Estimates: {rows: 50 (450B), cpu: 1.07k, memory: 0B, network: 0B}/{rows: 13 (113B), cpu: 1.07k, memory: 0B, network: 0B}/{rows: 13 (113B), cpu: 113, memory: 0B, network: 0B}
-           CPU: 8.00ms (100.00%), Scheduled: 40.00ms (100.00%), Blocked: 0.00ns (0.00%), Output: 17 rows (153B)
+           CPU: 5.00ms (100.00%), Scheduled: 6.00ms (100.00%), Blocked: 0.00ns (0.00%), Output: 17 rows (153B)
            Input avg.: 50.00 rows, Input std.dev.: 0.00%
            units := 4:units:bigint
            month := 2:month:timestamp(6) with time zone
-           Input: 50 rows (1.06kB), Filtered: 66.00%, Physical input: 1.34kB, Physical input time: 24.07us, Splits: 1, Splits generation wait time: 41.28ms
+           Input: 50 rows (1019B), Filtered: 66.00%, Physical input: 1.35kB, Physical input time: 14.26us, Splits: 1, Splits generation wait time: 93.49ms
 
 
 
 --- EXPLAIN ANALYZE partitionnee
 Trino version: 480
-Queued: 515.12us, Analysis: 208.20ms, Planning: 85.96ms, Execution: 488.15ms, Finishing: 0.00ns
+Queued: 607.86us, Analysis: 131.46ms, Planning: 86.70ms, Execution: 649.18ms, Finishing: 0.00ns
 Fragment 1 [SINGLE]
-    CPU: 2.16ms, Scheduled: 2.33ms, Blocked 412.50ms (Input: 269.30ms, Output: 0.00ns), Input: 1 row (9B); per task: avg.: 1.00 std.dev.: 0.00, Output: 1 row (9B)
+    CPU: 2.47ms, Scheduled: 2.53ms, Blocked 799.68ms (Input: 506.22ms, Output: 0.00ns), Input: 1 row (9B); per task: avg.: 1.00 std.dev.: 0.00, Output: 1 row (9B)
     Peak Memory: 96B, Tasks count: 1; per task: max: 96B
     Output layout: [sum]
     Output partitioning: SINGLE []
     Aggregate[type = FINAL]
     │   Layout: [sum:bigint]
     │   Estimates: {rows: 1 (9B), cpu: 153, memory: 9B, network: 0B}
-    │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 0.00ns (0.00%), Output: 1 row (9B)
+    │   CPU: 1.00ms (8.33%), Scheduled: 1.00ms (0.93%), Blocked: 0.00ns (0.00%), Output: 1 row (9B)
     │   Input avg.: 1.00 rows, Input std.dev.: 0.00%
     │   sum := sum(sum_0)
     └─ LocalExchange[partitioning = SINGLE]
        │   Layout: [sum_0:bigint]
        │   Estimates: {rows: 17 (153B), cpu: 0, memory: 0B, network: 0B}
-       │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 143.00ms (34.71%), Output: 1 row (9B)
+       │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 293.00ms (36.67%), Output: 1 row (9B)
        │   Input avg.: 0.50 rows, Input std.dev.: 100.00%
        └─ RemoteSource[sourceFragmentIds = [2]]
               Layout: [sum_0:bigint]
-              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 269.00ms (65.29%), Output: 1 row (9B)
+              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 506.00ms (63.33%), Output: 1 row (9B)
               Input avg.: 0.50 rows, Input std.dev.: 100.00%
 
 Fragment 2 [SOURCE]
-    CPU: 9.02ms, Scheduled: 68.93ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 17 rows (374B); per task: avg.: 17.00 std.dev.: 0.00, Output: 1 row (9B)
+    CPU: 11.12ms, Scheduled: 106.30ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 17 rows (374B); per task: avg.: 17.00 std.dev.: 0.00, Output: 1 row (9B)
     Peak Memory: 96B, Tasks count: 1; per task: max: 96B
     Output layout: [sum_0]
     Output partitioning: SINGLE []
@@ -791,14 +814,14 @@ Fragment 2 [SOURCE]
     │   CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 0.00ns (0.00%), Output: 1 row (9B)
     │   Input avg.: 17.00 rows, Input std.dev.: 0.00%
     │   sum_0 := sum(units)
-    └─ ScanFilterProject[table = lakehouse:gold.orders_by_state_month_part$data@1462174112954518729, filterPredicate = (month = timestamp(6) with time zone '2020-01-01 00:00:00.000000 UTC')]
+    └─ ScanFilterProject[table = lakehouse:gold.orders_by_state_month_part$data@7986103731214051178, filterPredicate = (month = timestamp(6) with time zone '2020-01-01 00:00:00.000000 UTC')]
            Layout: [units:bigint]
            Estimates: {rows: 17 (153B), cpu: 374, memory: 0B, network: 0B}/{rows: 17 (153B), cpu: 374, memory: 0B, network: 0B}/{rows: 17 (153B), cpu: 153, memory: 0B, network: 0B}
-           CPU: 9.00ms (100.00%), Scheduled: 69.00ms (100.00%), Blocked: 0.00ns (0.00%), Output: 17 rows (153B)
+           CPU: 11.00ms (91.67%), Scheduled: 106.00ms (99.07%), Blocked: 0.00ns (0.00%), Output: 17 rows (153B)
            Input avg.: 17.00 rows, Input std.dev.: 0.00%
            units := 4:units:bigint
            month := 2:month:timestamp(6) with time zone
-           Input: 17 rows (374B), Filtered: 0.00%, Physical input: 1.02kB, Physical input time: 8.52us, Splits: 1, Splits generation wait time: 111.24ms
+           Input: 17 rows (374B), Filtered: 0.00%, Physical input: 1.05kB, Physical input time: 8.33us, Splits: 1, Splits generation wait time: 97.71ms
 
 
 
@@ -813,15 +836,15 @@ Fragment 2 [SOURCE]
 --- cohorts
     birth_decade  users  orders  avg_units_per_order
 0           1910      1      47                 3.19
-1           1930      5     198                 3.14
-2           1940      4     273                 3.06
+1           1930      6     201                 3.12
+2           1940      4     275                 3.07
 3           1950      6     340                 3.01
 4           1960      8     433                 3.02
 5           1970      5     369                 2.99
 6           1980      2      81                 2.79
-7           1990      5     402                 3.07
+7           1990      6     402                 3.07
 8           2000      4     154                 2.99
-9           2010      5     244                 3.08
+9           2010      6     244                 3.08
 10          2020      5     288                 3.12
 
 ====================================================================================================
@@ -847,8 +870,8 @@ Index: []
 
 --- snapshots gold.orders_by_state_month
            snapshot_id                  committed_at  operation
-0   402249839238054966 2026-11-09 09:19:12.024+00:00     append
-1  4595356025752766224 2026-11-09 09:20:15.122+00:00  overwrite
+0  4927860157111828828 2026-11-09 11:01:34.377+00:00     append
+1   767013491774851645 2026-11-09 11:02:40.078+00:00  overwrite
 
 --- DELETE commande test
    rows
@@ -864,7 +887,7 @@ Index: []
 
 --- controle
    silver_orders  gold_orders
-0           2829         2829
+0           2834         2834
 
 ====================================================================================================
 === EXERCICE 4 / optimize
@@ -872,13 +895,13 @@ Index: []
 
 --- snapshots avant
            snapshot_id                  committed_at operation
-0  7951056437267566866 2026-11-09 09:19:15.064+00:00    append
-1  5919678746533310502 2026-11-09 09:19:25.973+00:00    delete
-2  2365973249982093320 2026-11-09 09:19:28.024+00:00    append
+0  7437251863693689898 2026-11-09 11:01:37.922+00:00    append
+1  4865815557179432209 2026-11-09 11:01:50.469+00:00    delete
+2  8372922302188857645 2026-11-09 11:01:52.261+00:00    append
 
 --- fichiers avant
                                                                                                                                                              file_path  record_count  file_size_in_bytes
-0  s3://user-b-defelice-ece/warehouse/gold/top_products-c2e26fcf471548628dbc8d53b91d4319/data/20261109_091926_00163_ttkbn-5f8ca1eb-9df7-4aa1-9400-f46affd85fdd.parquet             6                 760
+0  s3://user-b-defelice-ece/warehouse/gold/top_products-efb3f08162c94d02a8eeb15f28a4f02d/data/20261109_110150_00038_cz8x2-3505dae5-75c4-456a-99e3-f654cfc42ee3.parquet             6                 760
 
 --- optimize
 Empty DataFrame
@@ -887,13 +910,13 @@ Index: []
 
 --- snapshots apres
            snapshot_id                  committed_at operation
-0  7951056437267566866 2026-11-09 09:19:15.064+00:00    append
-1  5919678746533310502 2026-11-09 09:19:25.973+00:00    delete
-2  2365973249982093320 2026-11-09 09:19:28.024+00:00    append
+0  7437251863693689898 2026-11-09 11:01:37.922+00:00    append
+1  4865815557179432209 2026-11-09 11:01:50.469+00:00    delete
+2  8372922302188857645 2026-11-09 11:01:52.261+00:00    append
 
 --- fichiers apres
                                                                                                                                                              file_path  record_count  file_size_in_bytes
-0  s3://user-b-defelice-ece/warehouse/gold/top_products-c2e26fcf471548628dbc8d53b91d4319/data/20261109_091926_00163_ttkbn-5f8ca1eb-9df7-4aa1-9400-f46affd85fdd.parquet             6                 760
+0  s3://user-b-defelice-ece/warehouse/gold/top_products-efb3f08162c94d02a8eeb15f28a4f02d/data/20261109_110150_00038_cz8x2-3505dae5-75c4-456a-99e3-f654cfc42ee3.parquet             6                 760
 
 --- aws s3 ls warehouse/gold/top_products/
 (rien sous warehouse/gold/top_products/)
@@ -915,7 +938,7 @@ Index: []
 8               user_activity
 ################ exercice 5 (Spark)
 lignes Spark : 50 | lignes Trino (gold) : 50
-unites Spark : 8615 | unites Trino : 8615
+unites Spark : 8630 | unites Trino : 8630
 lignes differentes (hors colonne month) : 0
 +-----+-------------------+------+-----+------+
 |state|month              |orders|units|buyers|

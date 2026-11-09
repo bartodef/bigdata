@@ -1,0 +1,78 @@
+   Building bigdata @ file:///home/onyxia/work/bigdata
+      Built bigdata @ file:///home/onyxia/work/bigdata
+Uninstalled 1 package in 3ms
+Installed 1 package in 12ms
+┌─────────┬────────┬──────────┐
+│ engine  │ orders │ quantity │
+│ varchar │ int64  │  int128  │
+├─────────┼────────┼──────────┤
+│ dbt     │   2829 │     8615 │
+│ spark   │   2829 │     8615 │
+└─────────┴────────┴──────────┘
+
+┌─────────┬───────┐
+│ engine  │ users │
+│ varchar │ int64 │
+├─────────┼───────┤
+│ dbt     │    50 │
+│ spark   │    50 │
+└─────────┴───────┘
+
+┌─────────────┬──────────────────────────┬─────────┬─────────┬─────────┬─────────┐
+│ column_name │       column_type        │  null   │   key   │ default │  extra  │
+│   varchar   │         varchar          │ varchar │ varchar │ varchar │ varchar │
+├─────────────┼──────────────────────────┼─────────┼─────────┼─────────┼─────────┤
+│ order_id    │ UUID                     │ YES     │ NULL    │ NULL    │ NULL    │
+│ user_id     │ UUID                     │ YES     │ NULL    │ NULL    │ NULL    │
+│ ordered_at  │ TIMESTAMP WITH TIME ZONE │ YES     │ NULL    │ NULL    │ NULL    │
+│ quantity    │ INTEGER                  │ YES     │ NULL    │ NULL    │ NULL    │
+│ product     │ VARCHAR                  │ YES     │ NULL    │ NULL    │ NULL    │
+└─────────────┴──────────────────────────┴─────────┴─────────┴─────────┴─────────┘
+
+┌─────────────┬─────────────┬─────────┬─────────┬─────────┬─────────┐
+│ column_name │ column_type │  null   │   key   │ default │  extra  │
+│   varchar   │   varchar   │ varchar │ varchar │ varchar │ varchar │
+├─────────────┼─────────────┼─────────┼─────────┼─────────┼─────────┤
+│ order_id    │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ user_id     │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ ordered_at  │ TIMESTAMP   │ YES     │ NULL    │ NULL    │ NULL    │
+│ quantity    │ INTEGER     │ YES     │ NULL    │ NULL    │ NULL    │
+│ product     │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+└─────────────┴─────────────┴─────────┴─────────┴─────────┴─────────┘
+
+┌─────────────────────┬─────────────┬─────────┬─────────┬─────────┬─────────┐
+│     column_name     │ column_type │  null   │   key   │ default │  extra  │
+│       varchar       │   varchar   │ varchar │ varchar │ varchar │ varchar │
+├─────────────────────┼─────────────┼─────────┼─────────┼─────────┼─────────┤
+│ user_id             │ UUID        │ YES     │ NULL    │ NULL    │ NULL    │
+│ username            │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ username_normalized │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ name                │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ sex                 │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ email               │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ birthdate           │ DATE        │ YES     │ NULL    │ NULL    │ NULL    │
+│ birthdate_is_valid  │ BOOLEAN     │ YES     │ NULL    │ NULL    │ NULL    │
+│ street              │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ city                │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ state               │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ zip_code            │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+└─────────────────────┴─────────────┴─────────┴─────────┴─────────┴─────────┘
+  12 rows                                                         6 columns
+
+┌─────────────┬─────────────┬─────────┬─────────┬─────────┬─────────┐
+│ column_name │ column_type │  null   │   key   │ default │  extra  │
+│   varchar   │   varchar   │ varchar │ varchar │ varchar │ varchar │
+├─────────────┼─────────────┼─────────┼─────────┼─────────┼─────────┤
+│ user_id     │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ username    │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ name        │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ sex         │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ email       │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ birthdate   │ DATE        │ YES     │ NULL    │ NULL    │ NULL    │
+│ street      │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ city        │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ state       │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+│ zip_code    │ VARCHAR     │ YES     │ NULL    │ NULL    │ NULL    │
+└─────────────┴─────────────┴─────────┴─────────┴─────────┴─────────┘
+  10 rows                                                 6 columns
+

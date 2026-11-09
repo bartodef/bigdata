@@ -1,0 +1,113 @@
+14:50:51.064 [Executor task launch worker for task 1.0 in stage 7.0 (TID 12)] ERROR org.apache.spark.executor.Executor - Exception in task 1.0 in stage 7.0 (TID 12)
+org.apache.spark.api.python.PythonException: Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/lib/pyspark.zip/pyspark/worker.py", line 3386, in main
+    process()
+    ~~~~~~~^^
+  File "/usr/local/lib/spark/python/lib/pyspark.zip/pyspark/worker.py", line 3377, in process
+    serializer.dump_stream(out_iter, outfile)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/spark/python/lib/pyspark.zip/pyspark/serializers.py", line 273, in dump_stream
+    vs = list(itertools.islice(iterator, batch))
+  File "/usr/local/lib/spark/python/lib/pyspark.zip/pyspark/util.py", line 141, in wrapper
+    return f(*args, **kwargs)
+  File "/home/onyxia/work/bigdata/spark/lab_rdd.py", line 53, in parse_order
+    order_id, user_id, date, quantity, product = line.split(",")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 5)
+
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.handlePythonException(PythonRunner.scala:645) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1029) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.api.python.PythonRunner$$anon$3.read(PythonRunner.scala:1014) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.api.python.BasePythonRunner$ReaderIterator.hasNext(PythonRunner.scala:596) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at scala.collection.mutable.Growable.addAll(Growable.scala:61) ~[scala-library-2.13.17.jar:?]
+	at scala.collection.mutable.Growable.addAll$(Growable.scala:57) ~[scala-library-2.13.17.jar:?]
+	at scala.collection.mutable.ArrayBuilder.addAll(ArrayBuilder.scala:75) ~[scala-library-2.13.17.jar:?]
+	at scala.collection.IterableOnceOps.toArray(IterableOnce.scala:1528) ~[scala-library-2.13.17.jar:?]
+	at scala.collection.IterableOnceOps.toArray$(IterableOnce.scala:1521) ~[scala-library-2.13.17.jar:?]
+	at org.apache.spark.InterruptibleIterator.toArray(InterruptibleIterator.scala:28) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.rdd.RDD.$anonfun$collect$2(RDD.scala:1057) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.SparkContext.$anonfun$runJob$5(SparkContext.scala:2536) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:180) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.scheduler.Task.run(Task.scala:147) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$5(Executor.scala:716) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:86) ~[spark-common-utils_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:83) ~[spark-common-utils_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:97) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:719) ~[spark-core_2.13-4.1.1.jar:4.1.1]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+14:50:51.133 [task-result-getter-0] ERROR org.apache.spark.scheduler.TaskSetManager - Task 1 in stage 7.0 failed 1 times; aborting job
+defaultParallelism 2 defaultMinPartitions 2
+=== Partitions
+users 2
+orders 2
+repartition(8) 8
+coalesce(8) 2
+coalesce(1) 1
+=== Lazy evaluation
+(2) PythonRDD[12] at RDD at PythonRDD.scala:58 []
+ |  orders.csv MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0 []
+ |  orders.csv HadoopRDD[2] at textFile at NativeMethodAccessorImpl.java:0 []
+count 1 2829
+count 2 2829
+nouveaux stages 2
+=== Adresse sur 2 lignes
+'uuid,username,name,sex,address,mail,birthdate'
+'bdd640fb-0667-4ad1-9c80-317fa3b1799d,garzaanthony,Charles Garcia,M,"908 Jennifer Squares'
+'Robinsonshire, KY 01352",helenpeterson@gmail.com,1935-10-21'
+'17be3111-1a2a-43ed-962b-0f79c37459ee,blairamanda,Ryan Munoz,M,"Unit 6184 Box 9593'
+'DPO AP 09617",stanleykendra@gmail.com,2010-01-16'
+'47294739-614f-43d7-99db-3ad0ddd1dfb2,elizabethmiles,Jacob Wood,M,"283 Steven Groves'
+lignes users 101
+vrais users 50
+[{'order_id': '2339ba19-2563-4cc3-8a97-ebf555d596af', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 00:02:17.891488+00:00', 'quantity': 4, 'product': 'drink'}, {'order_id': 'b49e04cc-c243-49e7-a387-eaf6d4c3a832', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 01:28:08.796458+00:00', 'quantity': 5, 'product': 'bread'}, {'order_id': '41843b03-04dd-4054-9448-23f7e7e646c7', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 02:12:56.357080+00:00', 'quantity': 2, 'product': 'donut'}]
+=== Virgule en trop dans product
+map ok, rien ne plante encore
+erreur a l'action : ValueError: too many values to unpack
+=== reduceByKey vs groupByKey
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 12), ('969b6662-0562-4059-968c-c69b1064005c', 40), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 253), ('5563f616-00e8-4ece-8b49-452d46d483f3', 57), ('f94d6204-6808-493f-9fed-2c43e256a6dc', 175)]
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 12), ('969b6662-0562-4059-968c-c69b1064005c', 40), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 253), ('5563f616-00e8-4ece-8b49-452d46d483f3', 57), ('f94d6204-6808-493f-9fed-2c43e256a6dc', 175)]
+reduceByKey stage 9 shuffleWrite 0 shuffleRead 1065
+reduceByKey stage 8 shuffleWrite 2513 shuffleRead 0
+groupByKey stage 11 shuffleWrite 0 shuffleRead 2643
+groupByKey stage 10 shuffleWrite 6230 shuffleRead 0
+memes resultats True
+=== Dedoublonnage
+2829 2829
+avec 3 doublons 2832 apres 2829
+=== Jointure
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', ({'order_id': 'f1f7d904-1307-4157-98c1-28e7d6cd3155', 'user_id': 'f143262f-dc5c-4eed-8da0-365bf89897b9', 'date': '2020-01-07 17:49:04.785279+00:00', 'quantity': 1, 'product': 'bread'}, 'kayla51'))]
+join 2829
+leftOuterJoin 2829
+=== Exercice 1 aggregateByKey
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', (4, 12)), ('969b6662-0562-4059-968c-c69b1064005c', (12, 40)), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', (85, 253))]
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 3.0), ('969b6662-0562-4059-968c-c69b1064005c', 3.33), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 2.98)]
+=== Exercice 2 user inconnu
+sans user 1 ['ffffffff-ffff-ffff-ffff-ffffffffffff']
+join normal 2829
+=== Exercice 3 DataFrame
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[user_uuid#18], functions=[sum(quantity#20)])
+   +- Exchange hashpartitioning(user_uuid#18, 200), ENSURE_REQUIREMENTS, [plan_id=30]
+      +- HashAggregate(keys=[user_uuid#18], functions=[partial_sum(quantity#20)])
+         +- FileScan csv [user_uuid#18,quantity#20] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/home/onyxia/work/bigdata/orders.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<user_uuid:string,quantity:int>
+
+
+(2) PythonRDD[32] at collect at /home/onyxia/work/bigdata/spark/lab_rdd.py:87 []
+ |  MapPartitionsRDD[25] at mapPartitions at PythonRDD.scala:170 []
+ |  ShuffledRDD[24] at partitionBy at NativeMethodAccessorImpl.java:0 []
+ +-(2) PairwiseRDD[23] at reduceByKey at /home/onyxia/work/bigdata/spark/lab_rdd.py:77 []
+    |  PythonRDD[22] at reduceByKey at /home/onyxia/work/bigdata/spark/lab_rdd.py:77 []
+    |  PythonRDD[18] at RDD at PythonRDD.scala:58 []
+    |      CachedPartitions: 2; MemorySize: 168.0 KiB; DiskSize: 0.0 B
+    |  orders.csv MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0 []
+    |  orders.csv HadoopRDD[2] at textFile at NativeMethodAccessorImpl.java:0 []
+DataFrame = RDD True
+=== Exercice 4 cache
+avec cache [(0.092, 0.476), (0.155, 0.159), (0.14, 0.162)]
+onglet Storage [('PythonRDD', 2, 172051)]
+sans cache [(0.147, 0.311), (0.164, 0.188), (0.321, 0.284)]

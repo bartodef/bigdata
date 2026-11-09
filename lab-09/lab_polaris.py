@@ -217,7 +217,11 @@ elif ETAPE == "exo2":
 elif ETAPE == "schema":
     # (debug) rejoue seulement la section "Schema en dev"
     spark = session("dev")
-    spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
+    spark.table("lab.silver.users").writeTo("polaris.silver.users").createOrReplace()
+    try:
+        spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
+    except Exception as e:
+        print("ERREUR ALTER :", str(e)[:1500])
     spark.sql("DESCRIBE polaris.silver.users").show()
     spark.stop()
 

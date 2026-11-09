@@ -1,0 +1,42 @@
+=== Variables
+user-b-defelice-ece
+2026-10-16 09:21:04     331568 orders.csv
+2026-10-30 13:55:27       7351 users.csv
+=== Identifiants Polaris
+dev: 7e539053ad3c50ea:...
+=== Fichiers du chart
+=== Secret et ConfigMap
+secret/trino-polaris-oauth created
+secret/polaris-s3 unchanged
+configmap/trino-polaris-config created
+=== Deploiement (2 a 3 minutes)
+"trino" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "trino" chart repository
+...Successfully got an update from the "polaris" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "trino" chart repository
+...Successfully got an update from the "polaris" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 1 charts
+Downloading trino from repo https://trinodb.github.io/charts
+Deleting outdated charts
+Release "trino" does not exist. Installing it now.
+NAME: trino
+LAST DEPLOYED: Wed Nov  4 17:27:04 2026
+NAMESPACE: user-b-defelice-ece
+STATUS: deployed
+REVISION: 1
+=== Verification
+NAME                               READY   STATUS    RESTARTS   AGE
+trino-coordinator-fc85cf64-2rrxx   1/1     Running   0          2m16s
+HTTP/1.1 200 OK
+Date: Wed, 04 Nov 2026 17:29:20 GMT
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+Transfer-Encoding: chunked
+
+{"nodeId":"trino-coordinator-fc85cf64-2rrxx","state":"ACTIVE","nodeVersion":{"version":"480"},"environment":"production","coordinator":true,"coordinatorId":"2sz6w","starting":false,"uptime":"51.22s"}
+=== Fin
+FIN-DEPLOY 0

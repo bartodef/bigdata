@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")/.."  # les chemins sont relatifs a la racine du projet
 # Upload des datasets dans bronze/ depuis un Job Kubernetes
 set -e
 export AWS_PAGER=""
@@ -13,7 +14,7 @@ uv run dataset-orders -o csv > orders.csv
 ls -lh users.csv orders.csv
 
 # Relance possible : on supprime les objets d'une exécution précédente
-kubectl delete -f job-upload-bronze.yaml --ignore-not-found
+kubectl delete -f lab-03/job-upload-bronze.yaml --ignore-not-found
 kubectl delete configmap datasets s3-config --ignore-not-found
 kubectl delete secret s3-credentials --ignore-not-found
 
@@ -28,7 +29,7 @@ aws configure export-credentials --profile 'default' --format env-no-export \
 kubectl create secret generic s3-credentials --from-env-file=s3.env
 rm s3.env
 
-kubectl apply -f job-upload-bronze.yaml
+kubectl apply -f lab-03/job-upload-bronze.yaml
 kubectl wait --for=condition=complete job/upload-bronze --timeout=120s
 kubectl logs job/upload-bronze
 
@@ -36,6 +37,6 @@ echo "Vérification depuis le terminal :"
 aws s3 --profile 'default' ls "s3://$LAB_BUCKET_NAME/bronze/" --recursive
 
 # Les objets Kubernetes sont supprimés, les fichiers de bronze/ sont gardés pour les modules suivants
-kubectl delete -f job-upload-bronze.yaml
+kubectl delete -f lab-03/job-upload-bronze.yaml
 kubectl delete configmap datasets s3-config
 kubectl delete secret s3-credentials

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")/.."  # les chemins sont relatifs a la racine du projet
 # Nettoyage de fin de lab S3 : versions, delete markers, versioning, lifecycle, fichiers locaux
 set -e
 export AWS_PAGER=""

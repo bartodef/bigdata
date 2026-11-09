@@ -8,4 +8,4 @@ init.sql
 target/
 dbt_packages/
 logs/
-!lab_medallion/seeds/*.csv
+!lab-05/lab_medallion/seeds/*.csv

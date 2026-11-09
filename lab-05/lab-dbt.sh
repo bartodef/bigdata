@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Lab dbt complet sur Onyxia (sources bronze, silver, tests, docs, export Parquet, exercices)
-# Lancement : bash lab-dbt.sh 2>&1 | tee sortie-dbt.txt
+# Lancement : bash lab-05/lab-dbt.sh 2>&1 | tee lab-05/sortie-dbt.txt
 # Pas de set -e : un test en échec ne doit pas arrêter la suite
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 export AWS_PAGER=""
 export LAB_BUCKET_NAME="$KUBERNETES_NAMESPACE"
 echo "$LAB_BUCKET_NAME"
@@ -31,7 +31,7 @@ uv run dbt --version
 uv run python -c "import duckdb; print('duckdb python', duckdb.__version__)"
 duckdb --version
 
-cd lab_medallion
+cd lab-05/lab_medallion
 echo "=== dbt debug"
 uv run dbt debug
 

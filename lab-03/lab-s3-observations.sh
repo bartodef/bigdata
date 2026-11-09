@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Lab S3 : rejoue métadonnées, presigned URL, lifecycle et consistency pour noter les résultats
-# Lancement : bash lab-s3-observations.sh 2>&1 | tee sortie-s3-observations.txt
+# Lancement : bash lab-03/lab-s3-observations.sh 2>&1 | tee lab-03/sortie-s3-observations.txt
 # Pas de set -e : on veut voir les erreurs éventuelles de SeaweedFS
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 export AWS_PAGER=""
 export LAB_BUCKET_NAME="$KUBERNETES_NAMESPACE"
 export S3_ENDPOINT_URL=$(aws configure get endpoint_url --profile 'default' || echo "https://$AWS_S3_ENDPOINT")

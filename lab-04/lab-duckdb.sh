@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Lab DuckDB complet sur Onyxia
-# Lancement : bash lab-duckdb.sh 2>&1 | tee sortie-duckdb.txt
+# Lancement : bash lab-04/lab-duckdb.sh 2>&1 | tee lab-04/sortie-duckdb.txt
 set -e
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 export AWS_PAGER=""
 export LAB_BUCKET_NAME="$KUBERNETES_NAMESPACE"
 S3_ENDPOINT_URL=$(aws configure get endpoint_url --profile 'default' || echo "https://$AWS_S3_ENDPOINT")
@@ -37,15 +37,15 @@ if ! duckdb -init init.sql -c "SELECT count(*) AS users FROM read_csv(getvariabl
 fi
 
 echo "=== Requêtes du lab"
-duckdb analytics.duckdb -init init.sql < sql/lab-duckdb.sql
+duckdb analytics.duckdb -init init.sql < lab-04/sql/lab-duckdb.sql
 echo "=== Exercices"
-duckdb analytics.duckdb -init init.sql < sql/exercices.sql
+duckdb analytics.duckdb -init init.sql < lab-04/sql/exercices.sql
 
 echo "=== CSV vs Parquet à grande échelle"
 time uv run dataset-orders -u 5000 -o csv > orders_large.csv
 ls -lh orders_large.csv
 aws s3 --profile 'default' cp orders_large.csv "s3://$LAB_BUCKET_NAME/large/orders.csv"
-duckdb analytics.duckdb -init init.sql < sql/large.sql
+duckdb analytics.duckdb -init init.sql < lab-04/sql/large.sql
 aws s3 --profile 'default' ls "s3://$LAB_BUCKET_NAME/large/"
 for query in \
   "FROM read_csv(getvariable('bucket') || '/large/orders.csv', strict_mode=false) SELECT product, sum(quantity) GROUP BY product" \

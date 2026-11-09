@@ -1,0 +1,167 @@
+=== Fichiers du chart
+=== Variables
+user-b-defelice-ece
+2026-10-16 09:21:04     331568 orders.csv
+2026-10-30 13:55:27       7351 users.csv
+=== ConfigMap et Secrets
+configmap/polaris-config unchanged
+secret/polaris-credential unchanged
+secret/polaris-s3 configured
+=== Deploiement (2 a 3 minutes)
+"polaris" already exists with the same configuration, skipping
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "polaris" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "polaris" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 2 charts
+Downloading polaris from repo https://downloads.apache.org/polaris/helm-chart
+Downloading postgresql from repo oci://registry-1.docker.io/bitnamicharts
+Pulled: registry-1.docker.io/bitnamicharts/postgresql:18.12.15
+Digest: sha256:8ab742fa91169b2c317a0ffa061d279d4964a45850408a319c764b3798242ba2
+Deleting outdated charts
+Release "polaris" does not exist. Installing it now.
+NAME: polaris
+LAST DEPLOYED: Wed Nov  4 17:23:05 2026
+NAMESPACE: user-b-defelice-ece
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+=== Sante
+{
+    "status": "UP",
+    "checks": [
+        {
+            "name": "Database connections health check",
+            "status": "UP",
+            "data": {
+                "<default>": "UP"
+            }
+        },
+        {
+            "name": "MongoDB connection health check",
+            "status": "UP"
+        }
+    ]
+}
+=== Identifiants dev et analyst
+7e539053ad3c50ea:...
+b1ca24aa8459b7f2:...
+=== Entites creees par le bootstrap
+{
+  "catalogs": [
+    {
+      "type": "INTERNAL",
+      "name": "user-b-defelice-ece",
+      "properties": {
+        "default-base-location": "s3://user-b-defelice-ece/warehouse/"
+      },
+      "createTimestamp": 1793813175292,
+      "lastUpdateTimestamp": 1793813175292,
+      "entityVersion": 1,
+      "storageConfigInfo": {
+        "allowedKmsKeys": [],
+        "encryptionKeys": [],
+        "decryptionKeys": [],
+        "region": "us-east-1",
+        "endpoint": "https://s3.seaweedfs.adm.adaltas.cloud",
+        "stsUnavailable": true,
+        "endpointInternal": "https://s3.seaweedfs.adm.adaltas.cloud",
+        "pathStyleAccess": true,
+        "storageType": "S3",
+        "allowedLocations": [
+          "s3://user-b-defelice-ece/warehouse/"
+        ]
+      }
+    }
+  ]
+}
+{
+  "principals": [
+    {
+      "name": "dev",
+      "clientId": "7e539053ad3c50ea",
+      "properties": {},
+      "createTimestamp": 1793813170107,
+      "lastUpdateTimestamp": 1793813170107,
+      "entityVersion": 1
+    },
+    {
+      "name": "analyst",
+      "clientId": "b1ca24aa8459b7f2",
+      "properties": {},
+      "createTimestamp": 1793813171192,
+      "lastUpdateTimestamp": 1793813171192,
+      "entityVersion": 1
+    },
+    {
+      "name": "root",
+      "clientId": "root",
+      "properties": {},
+      "createTimestamp": 1793813059432,
+      "lastUpdateTimestamp": 1793813059432,
+      "entityVersion": 1
+    }
+  ]
+}
+{
+  "roles": [
+    {
+      "name": "data_analyst",
+      "federated": false,
+      "properties": {},
+      "createTimestamp": 1793813172601,
+      "lastUpdateTimestamp": 1793813172601,
+      "entityVersion": 1
+    },
+    {
+      "name": "service_admin",
+      "federated": false,
+      "properties": {},
+      "createTimestamp": 1793813060822,
+      "lastUpdateTimestamp": 1793813060822,
+      "entityVersion": 1
+    },
+    {
+      "name": "data_engineer",
+      "federated": false,
+      "properties": {},
+      "createTimestamp": 1793813172006,
+      "lastUpdateTimestamp": 1793813172006,
+      "entityVersion": 1
+    }
+  ]
+}
+{
+  "roles": [
+    {
+      "name": "catalog_admin",
+      "properties": {},
+      "createTimestamp": 1793813175392,
+      "lastUpdateTimestamp": 1793813175392,
+      "entityVersion": 1
+    },
+    {
+      "name": "catalog_reader",
+      "properties": {},
+      "createTimestamp": 1793813177403,
+      "lastUpdateTimestamp": 1793813177403,
+      "entityVersion": 1
+    },
+    {
+      "name": "catalog_contributor",
+      "properties": {},
+      "createTimestamp": 1793813176810,
+      "lastUpdateTimestamp": 1793813176810,
+      "entityVersion": 1
+    }
+  ]
+}
+NAME                      READY   STATUS      RESTARTS   AGE
+polaris-bootstrap-m2mtw   0/1     Completed   0          41s
+polaris-f448f85f4-rr2vz   1/1     Running     0          3m21s
+polaris-postgresql-0      1/1     Running     0          3m21s
+vscode-pyspark-631554-0   1/1     Running     0          13m
+=== Termine
+FIN-POLARIS

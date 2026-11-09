@@ -146,7 +146,13 @@ if ETAPE == "dev":
     spark.sql("SELECT file FROM polaris.silver.users.metadata_log_entries").show(truncate=False)
 
     print("=== Schema en dev")
-    spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
+    try:
+        spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
+    except Exception as e:
+        # la colonne country existe deja : elle a ete ajoutee a lab.silver.users par l'exercice 4 du lab Iceberg
+        print("ALTER ADD COLUMN country :", str(e).split("\n")[0][:160])
+        print("-> la colonne existe deja, j'ajoute une colonne region a la place")
+        spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN region STRING")
     spark.sql("DESCRIBE polaris.silver.users").show()
     spark.sql("SELECT file FROM polaris.silver.users.metadata_log_entries").show(truncate=False)
     spark.sql("SELECT file FROM polaris.silver.orders.metadata_log_entries").show(truncate=False)
@@ -212,17 +218,6 @@ elif ETAPE == "exo2":
     essai(spark, "SHOW TABLES IN polaris.gold")
     essai(spark, "SELECT * FROM polaris.gold.orders_by_product")
     essai(spark, "INSERT INTO polaris.silver.orders SELECT * FROM polaris.silver.orders LIMIT 1")
-    spark.stop()
-
-elif ETAPE == "schema":
-    # (debug) rejoue seulement la section "Schema en dev"
-    spark = session("dev")
-    spark.table("lab.silver.users").writeTo("polaris.silver.users").createOrReplace()
-    try:
-        spark.sql("ALTER TABLE polaris.silver.users ADD COLUMN country STRING")
-    except Exception as e:
-        print("ERREUR ALTER :", str(e)[:1500])
-    spark.sql("DESCRIBE polaris.silver.users").show()
     spark.stop()
 
 elif ETAPE == "reset":

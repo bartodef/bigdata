@@ -75,7 +75,9 @@ def essai(spark, sql):
         spark.sql(sql).show(truncate=False)
         print("OK")
     except Exception as e:
-        msg = str(e).split("\n")[0]
+        lines = [l.strip() for l in str(e).split("\n") if l.strip()]
+        utiles = [l for l in lines if "Forbidden" in l or "NotAuthorized" in l or "403" in l]
+        msg = utiles[0] if utiles else lines[0]
         print("ERREUR :", msg[:400])
 
 

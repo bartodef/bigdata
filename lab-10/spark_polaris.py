@@ -1,7 +1,6 @@
 # Lab 10 Trino : partie Spark (preparation des tables silver dans Polaris + exercice 5)
 # Usage : python3 -u lab-10/spark_polaris.py prep|exo5
 import os
-import subprocess
 import sys
 
 from pyspark.sql import SparkSession
@@ -48,18 +47,14 @@ def tables():
 
 
 if ETAPE == "prep":
-    # Jeu de donnees de l'enonce : les 50 utilisateurs du generateur (graine 42) et exactement
-    # 100 commandes par utilisateur (-C 100 -c 100), soit 5000 commandes. Le bronze du bucket
-    # (generateur par defaut, entre 0 et 100 commandes par utilisateur) n'en donne que 2829.
+    # Bronze du bucket (users.csv et orders.csv), memes transformations que lab-07/lab_silver.py
     from pyspark.sql import functions as F
     from pyspark.sql.window import Window
 
-    tmp = "/tmp/lab10-dataset"
-    os.makedirs(tmp, exist_ok=True)
-    subprocess.run(f"uv run dataset-users -o csv > {tmp}/users.csv", shell=True, check=True)
-    subprocess.run(f"uv run dataset-orders -C 100 -c 100 -o csv > {tmp}/orders.csv", shell=True, check=True)
-    users_bronze = spark.read.csv(f"file://{tmp}/users.csv", header=True, multiLine=True)
-    orders_bronze = spark.read.csv(f"file://{tmp}/orders.csv", header=True, multiLine=True)
+    users_bronze = spark.read.csv(f"s3a://{BUCKET}/bronze/users.csv", header=True, inferSchema=True,
+                                  samplingRatio=0.01, multiLine=True)
+    orders_bronze = spark.read.csv(f"s3a://{BUCKET}/bronze/orders.csv", header=True, inferSchema=True,
+                                   samplingRatio=0.01, multiLine=True)
     print("bronze : users", users_bronze.count(), "orders", orders_bronze.count())
 
     # memes transformations que le lab 7 (lab-07/lab_silver.py)

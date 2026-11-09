@@ -25,15 +25,13 @@ def sql(statement):
 
 
 def show(title, statement):
-    print(f"\n--- {title}")
-    print(f">>> {' '.join(statement.split())}")
+    print(f"\n>>> {' '.join(statement.split())}")
     print(sql(statement).to_string())
 
 
 step = sys.argv[1] if len(sys.argv) > 1 else "1"
 
 if step == "1":
-    print("=== TEST 1 : connexion, catalogues, schemas, tables")
     show("version de Trino", "SELECT version()")
     show("catalogues", "SHOW CATALOGS")
     show("schemas du catalogue lakehouse", "SHOW SCHEMAS FROM lakehouse")
@@ -41,7 +39,6 @@ if step == "1":
     show("types de silver.orders", "DESCRIBE lakehouse.silver.orders")
 
 elif step == "2":
-    print("=== TEST 2 : requetes sur le silver")
     show("nombre de commandes", "SELECT count(*) AS orders FROM lakehouse.silver.orders")
     show("nombre d'utilisateurs", "SELECT count(*) AS users FROM lakehouse.silver.users")
     show("villes manquantes par etat", """
@@ -54,7 +51,6 @@ elif step == "2":
         WHERE u.user_id IS NULL""")
 
 elif step == "3":
-    print("=== TEST 3 : metadonnees Iceberg de silver.orders")
     show("snapshots", """
         SELECT snapshot_id, committed_at, operation, element_at(summary, 'spark.app.id') IS NOT NULL AS written_by_spark
         FROM lakehouse.silver."orders$snapshots" ORDER BY committed_at""")
@@ -64,7 +60,6 @@ elif step == "3":
     show("historique", 'SELECT * FROM lakehouse.silver."orders$history"')
 
 elif step == "4":
-    print("=== TEST 4 : plan distribue de la jointure orders / users")
     plan = sql("""
         EXPLAIN (TYPE DISTRIBUTED)
         SELECT u.state, count(*) AS orders
@@ -78,7 +73,6 @@ elif step == "4":
             print(line.rstrip()[:105])
 
 elif step == "5":
-    print("=== TEST 5 : statistiques d'execution (EXPLAIN ANALYZE)")
     stats = sql("""
         EXPLAIN ANALYZE
         SELECT u.state, count(*) AS orders
@@ -95,7 +89,6 @@ elif step == "5":
         FROM system.runtime.queries ORDER BY created DESC LIMIT 4""")
 
 elif step == "6":
-    print("=== TEST 6 : couche gold")
     show("tables du schema gold", "SHOW TABLES FROM lakehouse.gold")
     show("orders_by_state_month", "SELECT * FROM lakehouse.gold.orders_by_state_month ORDER BY month, state LIMIT 6")
     show("top_products", "SELECT * FROM lakehouse.gold.top_products ORDER BY units_rank")
@@ -103,7 +96,6 @@ elif step == "6":
         SELECT user_id, state, age, orders, units FROM lakehouse.gold.user_activity ORDER BY orders DESC LIMIT 5""")
 
 elif step == "7":
-    print("=== TEST 7 : validation gold contre silver")
     silver_units = sql("SELECT sum(quantity) AS v FROM lakehouse.silver.orders").iloc[0, 0]
     gold_units = sql("SELECT sum(units) AS v FROM lakehouse.gold.orders_by_state_month").iloc[0, 0]
     product_units = sql("SELECT sum(units) AS v FROM lakehouse.gold.top_products").iloc[0, 0]
@@ -121,7 +113,6 @@ elif step == "7":
     print("Les 4 assert passent : OK")
 
 elif step == "8":
-    print("=== TEST 8 : rafraichissement et time travel sur gold.top_products")
     show("snapshots (creation, DELETE, INSERT)", """
         SELECT snapshot_id, committed_at, operation
         FROM lakehouse.gold."top_products$snapshots" ORDER BY committed_at""")
@@ -129,11 +120,9 @@ elif step == "8":
     for i, label in enumerate(["apres creation", "apres DELETE", "apres INSERT (courant)"]):
         if i < len(snaps):
             sid = snaps.iloc[i, 0]
-            n = sql(f"SELECT count(*) FROM lakehouse.gold.top_products FOR VERSION AS OF {sid}").iloc[0, 0]
-            print(f"FOR VERSION AS OF {sid} ({label}) : {n} produits")
+            show("", f"SELECT count(*) AS products FROM lakehouse.gold.top_products FOR VERSION AS OF {sid}")
 
 elif step == "9":
-    print("=== TEST 9 : schema en etoile")
     show("nombre de lignes", """
         SELECT 'dim_user' AS table_name, count(*) AS row_count FROM lakehouse.gold.dim_user
         UNION ALL SELECT 'dim_product', count(*) FROM lakehouse.gold.dim_product
@@ -149,7 +138,6 @@ elif step == "9":
         GROUP BY d.year, u.state, p.product ORDER BY units DESC LIMIT 5""")
 
 elif step == "10":
-    print("=== TEST 10 : validation de l'etoile")
     silver_orders = sql("SELECT count(*) AS v FROM lakehouse.silver.orders").iloc[0, 0]
     fact_orders = sql("SELECT count(*) AS v FROM lakehouse.gold.fact_orders").iloc[0, 0]
     silver_units = sql("SELECT sum(quantity) AS v FROM lakehouse.silver.orders").iloc[0, 0]
@@ -177,7 +165,6 @@ elif step == "10":
     print("Les 3 assert passent : OK")
 
 elif step == "11":
-    print("=== EXERCICE 1 : table partitionnee par mois")
     show("fichiers de la table non partitionnee", """
         SELECT regexp_extract(file_path, '[^/]+$') AS file, record_count
         FROM lakehouse.gold."orders_by_state_month$files\"""")
@@ -194,11 +181,9 @@ elif step == "11":
                 print(f"{name:28s} -> {s.split(', Physical')[0]}")
 
 elif step == "12":
-    print("=== EXERCICE 2 : cohortes par decennie de naissance")
     show("gold.cohorts", "SELECT * FROM lakehouse.gold.cohorts ORDER BY birth_decade")
 
 elif step == "13":
-    print("=== EXERCICE 3 : MERGE et time travel sur gold.orders_by_state_month")
     show("snapshots (creation puis MERGE)", """
         SELECT snapshot_id, committed_at, operation
         FROM lakehouse.gold."orders_by_state_month$snapshots" ORDER BY committed_at""")
@@ -210,11 +195,10 @@ elif step == "13":
             WHERE state = 'VT' AND month = TIMESTAMP '2020-01-01 00:00:00 UTC'""")
 
 elif step == "14":
-    print("=== EXERCICE 4 : ALTER TABLE EXECUTE optimize sur gold.top_products")
     show("snapshots avant", 'SELECT snapshot_id, operation FROM lakehouse.gold."top_products$snapshots" ORDER BY committed_at')
     show("fichiers avant", 'SELECT regexp_extract(file_path, \'[^/]+$\') AS file, record_count, file_size_in_bytes FROM lakehouse.gold."top_products$files"')
     sql("ALTER TABLE lakehouse.gold.top_products EXECUTE optimize")
-    print("\n>>> ALTER TABLE lakehouse.gold.top_products EXECUTE optimize : execute")
+    print("\n>>> ALTER TABLE lakehouse.gold.top_products EXECUTE optimize")
     show("snapshots apres", 'SELECT snapshot_id, operation FROM lakehouse.gold."top_products$snapshots" ORDER BY committed_at')
     show("fichiers apres", 'SELECT regexp_extract(file_path, \'[^/]+$\') AS file, record_count, file_size_in_bytes FROM lakehouse.gold."top_products$files"')
 
